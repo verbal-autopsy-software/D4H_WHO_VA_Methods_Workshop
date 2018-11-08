@@ -1,0 +1,2228 @@
+---
+title: "Model VA Algorithm Code"
+author: "Sam Clark"
+date: "`r format(Sys.time(), '%B %e, %Y')`"
+output:
+  pdf_document:
+    includes:
+      in_header: pdf_header.tex
+  ioslides_presentation:
+    highlight: pygments
+    incremental: no
+  beamer_presentation:
+    colortheme: whale
+    fonttheme: professionalfonts
+    highlight: pygments
+    includes:
+      in_header: beamer_header.tex
+    incremental: no
+    theme: boxes
+    toc: yes
+  slidy_presentation:
+    highlight: pygments
+    incremental: no
+subtitle: ""
+---
+
+<!-- Model VA Algorithms  -->
+<!-- Sam Clark -->
+<!-- 2018-10-30 -->
+
+
+```{r setup, include=FALSE}
+# load necessary R packages
+library(knitr)
+library(xtable)
+library(gtools)
+library(gridExtra)
+library(car)
+# set global chunk options
+opts_chunk$set(fig.path='figure/', fig.align='center', fig.show='hold')
+opts_chunk$set(warning=FALSE, message=FALSE, error=FALSE, cache=FALSE)
+opts_chunk$set(tidy=TRUE)
+opts_chunk$set(cache=TRUE)
+options(formatR.arrow=TRUE, width=60)
+opts_chunk$set(size="small")
+# read_chunk('code/VA-Algorithms.R') # put R code here with
+opts_knit$set(root.dir = "code/")
+```
+
+# Introduction
+
+This document presents R code
+
++ to simulate VA deaths,
++ to create SCI from reference deaths with known cause,
++ that implements each of the four algorithms - Naive Bayes Classifier, InterVA, InSilicoVA, and Tariff
++ to calculate concordance matrices of assigned causes
++ to calculate and compare CSMF Accuracies
++ to conduct simulated cross-validation studies of VA algorithm performance, holding VA deaths and SCI constant, and 
++ to conduct a heuristic investigation of the effects of SCI on VA algorithm performance.
+
+R functions are defined for most of the activities above.  These can be reused easily and loaded all at once from the file 'Model-VA-Functions.R' using the R command 'source(file="Model-VA-Functions.R").
+
+```{r}
+rm(list=ls())
+source(file="./Model-VA-Functions.R")
+ls()
+```
+
+All of the code developed and presented below is for **heuristic** demonstration and pedagogical use *only*.  The code replicates only the *core logic* of each algorithm without important additional funcationality that is present in all real-world software implementations of the algorithms.  
+
+## VA Data
+
+VA data consist of deaths (rows) with a set of binary symptoms (columns).  Reference deaths are VA deaths that also have a *true* cause.  Reference deaths are used to prepare SCI or assess the accuracy of causes assigned by algorithms (or any other mechanism).
+
+## Symptom-Cause Information (SCI)
+
+Symptom-Cause Information is  any representation of the *true* relationship between VA symptoms and causes of death.  SCI can be prepared from refernece deaths, or it can come from another source.  When SCI is prepared from reference deaths it captures the true (or observed?) relationship between VA symptoms and causes in the dataset of reference deaths, so it is limited by whatever information exists about that relationship in that specific set of reference deaths. Alternativelt SCI can be compiled from other sources of information that describe how symptoms relate to causes.  Not all forms of SCI are perfect (or "SCI have limitations based on how thye were derived."?).  Many of the algorithms use SCI that do not account for dependence among symptoms for deaths from a given cause. (is this a limitation of the SCI or the algirthm or both?)  
+
+## VA Cause-Coding Algorithms
+
+VA cause-coding algorithms are effectively logical devices that combine VA data collected from deaths with SCI to assign causes of death that are jointly consistent with the symptoms in the colected VAs and the particular SCI used.  VA algorithms are often a combination of logic and computation and sometimes contain statistical procedures as well, e.g. InSilicoVA.  Algorithms vary in the inputs they require and the outputs they produce, and some algorithms also include significant data checking/editing functions that are run before the algorithm. The code presented below implements the core logic of each algorithm without any of additional data checking/edition or other extra funcationality included in all real-world versions of the algorithms.
+
+(I think some small "introduction" type of thing would be useful here to say something like, "In the rest of this document, the fuctions used to (1) Create matrix of SCI values, (2) Simulate Deaths, (3) Sample Simulated Deaths for Train/Test Split, (4) Calculate CSMFs, (5) Calculate SCI from Reference Deaths, (6) Create Dataset of User-defined (Arbitrary) Deaths, (7) Naive Bayes Classifier Algorithm, (8) InterVA Algorithm, (9) InSilicoVA, (10) Tools for Comparing Results Produced by Each Algorithm and
+Characterizing the Performance the Algorithms, (11) Cross Validation, (12) Characterizing the Effects of SCI, are described and we will use thees functions step-by-step to understand the workings of the VA algorithms.) (i hope i undersatdn correctly what you are doing here)
+
+# Symptom-Cause Information (consider renamining according to (1) just above and consider moving down - i think it would be an easier entry for people to start with data simulation)
+
+Create a function that converts an expandable list of SCI into a neat, usable matrix of SCI values.
+
+```{r}
+###### <<Function>>
+storeSCI <- function (SCIlist) {
+ 
+  # converts a list of p(s|c) SCI vectors into a labeled matrix
+  
+  # SCIlist: a list of 5-element SCI vectors, each element betweten 0.0 and 1.0
+  # return a labeled cause x p(s|c) matrix
+
+  # create matrix from list
+  SCI.mat <- matrix(unlist(SCIlist), ncol = 5, byrow = TRUE)
+  # label columns
+  colnames(SCI.mat) <- c("s1","s2","s3","s4","s5")
+  # label rows
+  # initialize row labels vector
+  sci.rownames <- "cause1"
+  # loop through causes
+  for (i in 2:nrow(SCI.mat)) {
+    # append each cause to row labels vector
+    sci.rownames <- c(sci.rownames,paste("cause",i,sep=""))
+  }
+  rownames(SCI.mat) <- sci.rownames
+  
+  # return matrix of SCI
+  return(SCI.mat)
+
+}
+```
+
+Create an matrix of $\Pr(s|c)$ SCI values.
+
+```{r}
+# create de novo SCI consisting of conditional probabilities p(s|c): causes x 5 symptoms
+# you can add or subtract causes, i.e. rows below
+SCI.denovo <- list()
+SCI.denovo[[1]] <- c(0.90,  0.40,  0.10,  0.01,  0.80)
+SCI.denovo[[2]] <- c(0.30,  0.41,  0.80,  0.75,  0.90)
+SCI.denovo[[3]] <- c(0.10,  0.01,  0.01,  0.95,  0.80)
+SCI.denovo[[4]] <- c(0.05,  0.90,  0.75,  0.50,  0.20)
+# have a look at the list of SCI
+SCI.denovo
+# store the SCI into a matrix
+SCI.denovo.mat <- storeSCI(SCI.denovo)
+# have a look at the matrix of SCI
+SCI.denovo.mat
+```
+
+# Simulate Deaths
+
+Create a function to simulate some deaths from a matrix of SCI.  For each death, first draw a cause, and then for each symptom, draw a binary value corresponding to whether or not the symptom appears for that death.  The causes are drawn according to a set of CSMFs provided as a pameter, and the symptoms are drawn according to the matrix of SCI provided as a parameter.
+
+```{r}
+###### <<Function>>
+simulateDeaths <- function (simDeaths.num,csmf,psc.mat) {
+  
+  # simulates a set of VA deaths using p(s|c) SCI and CSMFs provided
+  
+  # simDeaths.num is the number of daeths to simulate
+  # csmf is a vector of fractions, one for each cause
+  # psc.mat is matrix of conditional probabilities p(s|c)
+  # return 
+  #   * simDeaths: a labeled deaths x cause,symptoms matrix of simulated deaths
+  
+  # initialize vector simulated deaaths matrix
+  simDeaths <- c()
+  #loop over deaths
+  for (i in 1:simDeaths.num) {
+    # draw a cause, 1 or 2
+    cause <- which(rmultinom(1,1,csmf)==1)
+    # select he correct set of conditional probabilities for drawing symptoms
+    psc <- psc.mat[cause,]
+    # draw symptoms conditional on this cause
+    # initialize symptoms vector
+    symptoms <- c()
+    # loop over symptoms
+    for (s in 1:5) {
+      symptoms <- c(symptoms,rbinom(1,1,psc[s]))
+    }
+    # add this death to the deaths matrix
+    simDeaths <- rbind(simDeaths,c(cause,symptoms))
+  }
+  # name the columns
+  # initialize column names vector
+  death.colnames <- c("cause","s1")
+  # add symptom labels
+  for (s in 2:5) {
+    death.colnames <- c(death.colnames,paste("s",s,sep=""))
+  }
+  colnames(simDeaths) <- death.colnames
+  # initialize row names vector
+  death.rownames <- "death1"
+  # add row labels
+  for (i in 2:nrow(simDeaths)) {
+    death.rownames <- c(death.rownames,paste("death",i,sep=""))
+  }
+  rownames(simDeaths) <- death.rownames
+  
+  # return simulated deaths
+  return(simDeaths)
+
+}
+```
+
+Simulate some deaths from the SCI matrix we created earlier.  First create a set of CSMFs for the four causes that we defined in the SCI.
+
+
+```{r}
+# fraction of deaths that are for each cause: cause1, cause2, etc.
+csmf <- c(0.25,0.45,0.2,0.1)
+sum(csmf) # check that the elements of csmf add to 1.0
+
+# simulate 1000 deaths with the numbers of each determined by csmf and the symptoms generated
+#   by the conditional probabilities in psc.mat
+simDeaths <- simulateDeaths(1000,csmf,SCI.denovo.mat)
+# have a look
+head(simDeaths)
+# have a look at the dimensions 
+dim(simDeaths)
+
+# count the deaths by cause
+table(simDeaths[,1])
+
+# for deaths of cause 1, count the those with/without symptom 1
+table(simDeaths[which(simDeaths[,1]==1),2])
+# for deaths of cause 1, count the those with/without symptom 2
+table(simDeaths[which(simDeaths[,1]==1),3])
+# for deaths of cause 1, count the those with/without symptom 2
+table(simDeaths[which(simDeaths[,1]==1),4])
+# for deaths of cause 1, count the those with/without symptom 2
+table(simDeaths[which(simDeaths[,1]==1),5])
+# for deaths of cause 1, count the those with/without symptom 2
+table(simDeaths[which(simDeaths[,1]==1),6])
+
+# for deaths of cause 2, count the those with/without symptom 1
+table(simDeaths[which(simDeaths[,1]==2),2])
+```
+
+# Sample Simulated Deaths for Train/Test Split
+
+Select a sample of simulated deaths.  The sample will be used to create SCI, and the rest of the deaths will be used as test deaths to investigate the performance of the algorithms.
+
+```{r}
+# set the fraction of deaths to sample
+samp.frac <- 0.5
+# draw the sample
+sample <- sample(nrow(simDeaths),samp.frac*nrow(simDeaths))
+# have a look at the first few elements of the sample: these are the row numbers of the sampled deaths
+head(sample)
+
+# create a dataset of the sampol
+SCIdeaths <- simDeaths[sample,]
+# have a look at the new set of deaths
+head(SCIdeaths)
+# make sure the number corresponds to the sample fraction
+dim(SCIdeaths)
+# complement of the sample is for testing
+testDeaths <- simDeaths[(-sample),]
+head(testDeaths)
+dim(testDeaths)
+
+# make sure the SCI and test deaths are completely complementary sets
+# match tests if any element of v1 is found in v2 and returns an 'NA' if not
+# all tests if *all* the elements of the result of is.na() are 'NA'
+# expect a single valued respons of 'TRUE'
+all(is.na(match(rownames(SCIdeaths),rownames(testDeaths))))
+```
+
+# Calculate CSMFs
+
+Create a function to calculate the CSMFs corresponding to a set of deaths.
+
+```{r}
+###### <<Function>>
+calcCSMF <- function (deaths) {
+  
+  # calculate CSMFs for a set of deaths
+  
+  # deaths is a deaths x cause,symptoms matrix of deaths
+  # retuns a causes-element vector of CSMFs
+  
+  # identify unique causes
+  causes <- sort(unique(deaths[,1]))
+  # initialize vector of CSMFs
+  csmfs <- c()
+  # loop over causes 
+  for (c in 1:length(causes)) {
+    # calculate the fraction of deaths with cause c and add it to the matrix of CSMFs
+    csmfs <- c(csmfs,nrow(deaths[which(deaths[,1]==c),])/nrow(deaths))
+  }
+  # make csmfs result into a matrix
+  csmfs <- matrix(csmfs,nrow=1)
+  # label columns
+  csmfs.colnames <- "cause1"
+  for (i in 2:length(causes)) {
+    csmfs.colnames <- c(csmfs.colnames,paste("cause",i,sep=""))
+  }
+  colnames(csmfs) <- csmfs.colnames
+  # label rows - subsitute() returns the name of its input
+  rownames (csmfs) <- c(substitute(deaths))
+
+  # return CSMFs
+  return(csmfs)
+  
+}
+```
+
+Calculate the CSMFs of the test deaths and be sure that they are similar to the CSMFs provided when they were simulated.
+
+```{r}
+testDeaths.CSMF <- calcCSMF(testDeaths)
+# have a look and ensure that they correspond to the csmf used to simulate the deaths
+testDeaths.CSMF
+# csmf used to simulate the deaths
+csmf
+```
+
+The match is good.
+
+# Calculate SCI from Reference Deaths
+
+Create a function to calculate SCI from a set of deaths with a reference cause.  For all the deaths of a given cause, for each symptom, calculate the fraction of deaths for which the symptom exists.
+
+```{r}
+###### <<Function>>
+calcSCI <- function(deaths) {
+  
+  # calculate SCI from a set of deaths with causes and symptoms
+  
+  # deaths is a deaths x cause,symptoms matrix of deaths
+  # return a cause x symptoms matrix of conditional probabilities p(s|c)
+  
+  # identify unique causes
+  causes <- sort(unique(deaths[,1]))
+  # initialize list of vectors of SCI
+  sci <- list()
+  # loop over causes
+  for (c in 1:length(causes)) {
+    # calculate the fraction of deaths with each symptom for this cause
+    # add the result vector to the list of SCI
+    sci[[c]] <- colSums(deaths[which(deaths[,1]==c),2:6])/nrow(deaths[which(deaths[,1]==c),])
+  }
+  # convert the list to a matrix
+  sci <- matrix(unlist(sci), ncol = 5, byrow = TRUE)
+  colnames(sci) <- c("s1","s2","s3","s4","s5")
+  # initialize row labels vector
+  sci.rownames <- "cause1"
+  # loop over causes and create row labels vector
+  for (i in 2:length(causes)) {
+    # append each cause to row labels vector
+    sci.rownames <- c(sci.rownames,paste("cause",i,sep=""))
+  }
+  rownames(sci) <- sci.rownames
+  
+  # return cause x symptoms matrix of SCI
+  return(sci)
+  
+}
+```
+
+Calculate SCI from the the sample of SCI deaths, created above.
+
+```{r}
+# calculate SCI from the datasset of SCI deaths
+SCIdeaths.SCI <- calcSCI(SCIdeaths)
+# have a look at the SCI 
+SCIdeaths.SCI
+
+# check to be sure that the calculated SCI is similar to the SCI used to simulate the deaths
+# have a look at the calculated SCI rounded to 2 decimal places
+round(SCIdeaths.SCI,2)
+# have a look at the SCI used to simulate the deaths that were used to calculate the SCI
+SCI.denovo.mat
+# calculate and display the differences between the two
+round(SCIdeaths.SCI,2)-SCI.denovo.mat
+```
+
+Calculate the CSMFs of the SCI deaths.
+
+```{r}
+# calculate CSMFs for SCIdeaths
+SCIdeaths.CSMF <- calcCSMF(SCIdeaths)
+SCIdeaths.CSMF
+sum(SCIdeaths.CSMF)
+csmf
+```
+
+This looks good.
+
+# Create Dataset of User-defined (Arbitrary) Deaths
+
+Create a function that converts an expandable list of VA deaths into a neat, usable matrix of VA death symptom values, similar to teh storeSCI function above.
+
+```{r}
+###### <<Function>>
+storeVADeaths <- function (deathList) {
+
+  # converts a list of VA death vectors into a labeled matrix
+  
+  # deathList: a list of 5-element VA symptom vectors, each element 0 or 1
+  # return a labeled death x symptoms matrix
+   
+  # create a matrix with the deaths & signs/symptoms: rows for deaths, columns for signs/symptoms
+  deaths.mat <- matrix(unlist(deathList), ncol = 5, byrow = TRUE)
+  # label columns
+  colnames <- c("s1","s2","s3","s4","s5")
+  colnames(deaths.mat) <- colnames
+  # label rows
+  # initialize row labels vector
+  death.rownames <- "death1"
+  # loop over deaths
+  for (i in 2:nrow(deaths.mat)) {
+    # append each death top row labels vector
+    death.rownames <- c(death.rownames,paste("death",i,sep=""))
+  }
+  rownames(deaths.mat) <- death.rownames
+  
+  # return labeled matrix of ddeaths
+  return(deaths.mat)
+  
+}
+```
+
+Create a matrix of deaths with symptoms from an example list of VA deaths.  This list can be edited, expanded, or contracted to create an arbitrary set of VA deaths.
+
+```{r}
+# create a list of n VA deaths with 5 binary signs/symptoms each
+VAs <- list()
+
+# make up 10 VA deaths, each with 5 symptoms
+VAs[[1]]  <- c(0,1,1,1,1)
+VAs[[2]]  <- c(1,1,0,0,0)
+VAs[[3]]  <- c(0,1,0,0,1)
+VAs[[4]]  <- c(1,1,1,0,1)
+VAs[[5]]  <- c(0,1,0,1,1)
+VAs[[6]]  <- c(1,1,0,0,1)
+VAs[[7]]  <- c(0,1,1,0,1)
+VAs[[8]]  <- c(1,1,1,0,1)
+VAs[[9]]  <- c(0,0,0,0,1)
+VAs[[10]] <- c(0,1,0,0,0)
+
+# Create a matrix of deaths x symptoms
+VAexampleDeaths <- storeVADeaths(VAs)
+# have a look at the VA deaths dataset
+VAexampleDeaths
+```
+
+# Naive Bayes Classifier Algorithm
+
+Create a function to implement the Naive Bayes Classifier (NBC) VA coding algorithm.  Comments in the code explain each step.
+
+```{r}
+###### <<Function>>
+calcNBC <- function(SCI,SCI.c,deaths) {
+  
+  # implements the NBC VA algorithm
+  
+  # SCI is a cause x symptoms matrix of SCI conditional probabilities p(s|c)
+  # SCI.c is p(c) 
+  # deaths is a deaths x symptoms matrix of VA deaths containing binary symptom values
+  # returns a list containing
+  #   * deaths x cause,(largest)cause-probability matrix of NBC-identified causes
+  #   * deaths x cause-probabilities matrix of all cause-probabilities
+  #   * CSMFs calculated by summing 'fractional deaths' for each cause,  
+  #   * CSMFs calculated by calculating the fraction of deaths assigned to each cause
+  #   * when: date and time when finished
+  #   * deaths: the input deaths
+  #   * sci: the input SCI
+  
+  # NBC.probs are the NBC probabilities for each death: deaths x causes
+  NBC.probs <- array(0,dim=c(nrow(deaths),nrow(SCI)))
+
+  # NBC.causes are causes for maximum NBC probabilities
+  NBC.causes <- data.frame(
+    cause=as.character(rep("",nrow(deaths))),
+    probability=rep(0,nrow(deaths)),
+    stringsAsFactors = FALSE
+  )
+  rownames(NBC.causes) <- rownames(deaths)
+  
+  # calculate the NBC conditional probabilities of causes given symptoms vectors, p(c|s)
+  # loop over deaths
+  for (d in 1:nrow(deaths)) {
+    # loop over causes and calculate NBC products
+    # initialize a vector of probabilities for each cause
+    prob.causes <- c()
+    for (c in 1:nrow(SCI)) {
+      # loop over symptoms and update NBC products
+      # initialize the NBC product for this cause
+      nbc.product <- 1
+      # loop over symptoms
+      for (s in 1:ncol(SCI)) {
+        # update the NBC product for this symptom
+        nbc.product <- nbc.product * SCI[c,s]^deaths[d,s] * (1-SCI[c,s])^(1-deaths[d,s])
+      }
+      # multiple NBC product by p(c) and add to the results by cause
+      prob.causes <- c(prob.causes,SCI.c[c] * nbc.product)
+    }
+    # now that we have NBC products for each cause, loop over causes again and 
+    #   calculate NBC probability for each cause and this death's set of symptoms, 
+    #   e.g. normalize the NBC products
+    # loop over causes
+    for (c in 1:nrow(SCI)) {
+      NBC.probs[d,c] <- prob.causes[c] / sum(prob.causes)
+    }
+    # for each death identify the cause with the largest probability
+    # take the first element from the which() statement because sometimes all values 
+    #   of NBC.probs[d,] are equal
+    NBC.causes[d,1] <- paste("cause",which(NBC.probs[d,]==max(NBC.probs[d,]))[1],sep="")
+    NBC.causes[d,2] <- NBC.probs[d,which(NBC.probs[d,]==max(NBC.probs[d,]))[1]]
+  }
+  
+  # store all NBC cause-specific probabilities for each death in a labeled matrix
+  NBC.summaries <- NBC.probs
+  rownames(NBC.summaries) <- rownames(deaths)
+  # initialize vector of column labels, cause-probabilities
+  causes.NBC <- c("cause1.probability")
+  # loop over causes
+  for (c in 2:nrow(SCI)) {
+    # append each cause-probability to the column labels
+    causes.NBC <- c(causes.NBC,paste("cause",c,".probability",sep=""))
+  }
+  colnames(NBC.summaries) <- causes.NBC
+  
+  # calculate NBC CSMFs by summing 'fractional deaths', i.e. cause-probabilities for each cause
+  csmf.fracDeath <- colSums(NBC.summaries)/nrow(NBC.summaries)
+  # make csmf.fracDeath a matrix
+  csmf.fracDeath <- matrix(csmf.fracDeath,nrow=1)
+  # label columns with cause names
+  colnames(csmf.fracDeath) <- rownames(SCI)
+  # label rows - subsitute() returns the name of its input
+  rownames(csmf.fracDeath) <- c(paste(substitute(deaths),".fracDeath",sep=""))
+  
+  # calcualte CSMF by summing up classified deaths for each cause
+  # initialize vector of CSMFs
+  csmf.topCause <- c()
+  # loop over causes
+  for (c in 1:nrow(SCI)) {
+    # calculate and append fraction of deaths assigned to each cause
+    csmf.topCause <- c(csmf.topCause,length(which(NBC.causes[,1]==paste("cause",c,sep="")))/nrow(deaths))
+  }
+  # make csmf.topCause a matrix
+  csmf.topCause <- matrix(csmf.topCause,nrow=1)
+  # label columns
+  colnames(csmf.topCause) <- rownames(SCI)
+  # label rows - subsitute() returns the name of its input
+  rownames(csmf.topCause) <- c(paste(substitute(deaths),".topCause",sep=""))
+  
+  # create list of outputs to return
+  ret.list = list(
+    # deaths x cause,(largest)cause-probability matrix of NBC-identified causes
+    top.cause = NBC.causes,
+    # deaths x cause-probabilities matrix of all cause-probabilities
+    cause.probabilities = NBC.summaries,
+    # CSMFs calculated by summing 'fractional deaths' for each cause,  
+    #   i.e. cause-probabilities for each cause 
+    csmf.fracDeath = csmf.fracDeath,
+    # CSMFs calculated by calculating the fraction of deaths assigned to each cause
+    csmf.topCause = csmf.topCause,
+    # datetime when saved
+    when = format(Sys.time(),"%a %b %d %X %Y"),
+    # deaths
+    deaths = deaths,
+    # SCI
+    sci = SCI
+  )
+
+  # return list containing various outputs
+  return(ret.list)
+  
+}
+```
+
+Use the NBC algorithm to identify causes for the test deaths created above, and then look at all the elements of the list of results returned by the *calcNBC()* function.
+
+```{r}
+# prob.c is set of (marginal) p(c) required by the algorithm
+# don't know what it is, so use a uniform distribution
+prob.c <- rep(1/nrow(SCIdeaths.SCI),nrow(SCIdeaths.SCI)) 
+# to use the correct marginals that were used to simulate the deaths, use
+# SCI.c <- csmf 
+# verify that it's what you expect
+prob.c
+
+# create a 'VAdeaths' dataset from the test deaths
+VAdeaths <- testDeaths[,2:6] # test deaths
+
+# assign causes to the test deaths using the NBC algorithm
+NBC.results <- calcNBC(SCIdeaths.SCI,prob.c,testDeaths)
+```
+
+Have a look at the causes assigned to each death.
+
+```{r}
+head(NBC.results$top.cause)
+```
+
+Make sure the result dataset has a row for each death.
+
+```{r}
+dim(NBC.results$top.cause)
+```
+
+Have a look at the probabilities calculated for each cause for each death.
+
+```{r}
+head(NBC.results$cause.probabilities)
+```
+
+Make sure there is a set of probabilities for each death.
+
+```{r}
+dim(NBC.results$cause.probabilities)
+```
+
+Have a look at the CSMFs calculated by summing fractional deaths.
+
+```{r}
+NBC.results$csmf.fracDeath
+```
+
+Have a look at the CSMFs calcualted by summing assigned causes.
+
+```{r}
+NBC.results$csmf.topCause
+```
+
+Have a look when these causes where assigned.
+
+```{r}
+NBC.results$when
+```
+
+Have a look at the input deaths.
+
+```{r}
+
+head(NBC.results$deaths)
+```
+
+Have a look at the input SCI.
+
+```{r}
+NBC.results$sci
+```
+
+# InterVA Algorithm
+
+Create a function to implement the InterVA VA coding algorithm.  Comments in the code explain each step.
+
+```{r}
+###### <<Function>>
+calcInterVA <- function(SCI,SCI.c,deaths) {
+  
+  # implements the InterVA VA algorithm
+  
+  # SCI is a cause x symptoms matrix of SCI conditional probabilities p(s|c)
+  # SCI.c is p(c) 
+  # deaths is a deaths x symptoms matrix of VA deaths containing binary symptom values
+  # returns a list containing
+  #   * top.cause: deaths x cause,(largest)cause-propensity matrix of InterVA-identified causes
+  #   * cause.probabilities: deaths x cause-propensities matrix of all cause-propensities
+  #   * csmf.fracDeath: CSMFs calculated by summing 'fractional deaths' for each cause,  
+  #   * csmf.topCause: CSMFs calculated by calculating the fraction of deaths assigned to each cause
+  #   * when: date and time when finished
+  #   * deaths: the input deaths
+  #   * sci: the input SCI
+  
+  # InterVA.props are the InterVA propensities for each death: deaths x causes
+  InterVA.props <- array(0,dim=c(nrow(deaths),nrow(SCI)))
+  
+  # InterVA.causes are causes for maximum InterVA propensities
+  InterVA.causes <- data.frame(
+    cause=as.character(rep("",nrow(deaths))),
+    propensity=rep(0,nrow(deaths)),
+    stringsAsFactors = FALSE
+  )
+  rownames(InterVA.causes) <- rownames(deaths)
+  
+  # calculate the InterVA propensities for each cause given symptoms vectors, p(c|s)
+  # loop over deaths
+  for (d in 1:nrow(deaths)) {
+    # initialize the propensities
+    InterVA.props[d,] <- SCI.c
+    # loop over symptoms
+    for (s in 1:ncol(SCI)) {
+      # if the symptom exists
+      if (deaths[d,s]==1) {
+        # loop over causes
+        for (c in 1:nrow(SCI)) {
+          # update InterVA.propsensity for the current cause
+          InterVA.props[d,c] <- InterVA.props[d,c]*SCI[c,s]
+        }
+        # normalize the propensities
+        InterVA.props[d,] <- InterVA.props[d,]/sum(InterVA.props[d,])
+        # # the following is an InterVA4.02 bug that we can turn on by uncommenting these lines
+        # # truncate the propensities at 0.00001
+        # for (c in 1:nrow(SCI)) {
+        #   if (InterVA.props[d,c]<0.00001) {InterVA.props[d,c] <- 0}
+        # }
+      }
+    }
+    # for each death identify the cause with the largest propensity greater than 0.4,
+    #   or if none, label as 'indeterminate'
+    # take the first element from the which() statement because sometimes all values 
+    #   of InterVA.props[d,] are equal
+    InterVA.causes[d,1] <- ifelse(InterVA.props[d,which(InterVA.props[d,]==max(InterVA.props[d,]))[1]]>=0.4,
+      paste("cause",which(InterVA.props[d,]==max(InterVA.props[d,]))[1],sep=""),"indeterminate")
+    InterVA.causes[d,2] <- ifelse(InterVA.props[d,which(InterVA.props[d,]==max(InterVA.props[d,]))[1]]>=0.4,
+      InterVA.props[d,which(InterVA.props[d,]==max(InterVA.props[d,]))[1]],0)
+  }
+  
+  # store all InterVA cause-specific propensities for each death in a labeled matrix
+  InterVA.summaries <- InterVA.props
+  rownames(InterVA.summaries) <- rownames(deaths)
+  # initialize vector of column labels, cause-probabilities
+  causes.InterVA <- c("cause1.propensity")
+  # loop over causes
+  for (c in 2:nrow(SCI)) {
+    # append each cause-probability to the column labels
+    causes.InterVA <- c(causes.InterVA,paste("cause",c,".propensity",sep=""))
+  }
+  colnames(InterVA.summaries) <- causes.InterVA
+  
+  # calculate InterVA CSMFs by summing 'fractional deaths', i.e. cause-probabilities for each cause
+  csmf.fracDeath <- colSums(InterVA.summaries)/nrow(InterVA.summaries)
+  # make csmf.fracDeath a matrix
+  csmf.fracDeath <- matrix(csmf.fracDeath,nrow=1)
+  # label columns with cause names
+  colnames(csmf.fracDeath) <- rownames(SCI)
+  # label rows - subsitute() returns the name of its input
+  rownames(csmf.fracDeath) <- c(paste(substitute(deaths),".fracDeath",sep=""))
+  
+  # calcualte CSMF by summing up classified deaths for each cause
+  # initialize vector of CSMFs
+  csmf.topCause <- c()
+  # loop over causes
+  for (c in 1:nrow(SCI)) {
+    # calculate and append fraction of deaths assigned to each cause
+    csmf.topCause <- c(csmf.topCause,length(which(InterVA.causes[,1]==paste("cause",c,sep="")))/nrow(deaths))
+  }
+  # make csmf.topCause a matrix
+  csmf.topCause <- matrix(csmf.topCause,nrow=1)
+  # label columns
+  colnames(csmf.topCause) <- rownames(SCI)
+  # label rows - subsitute() returns the name of its input
+  rownames(csmf.topCause) <- c(paste(substitute(deaths),".topCause",sep=""))
+  
+  # create list of outputs to return
+  ret.list = list(
+    # deaths x cause,(largest)cause-probability matrix of InterVA-identified causes
+    top.cause = InterVA.causes,
+    # deaths x cause-probabilities matrix of all cause-probabilities
+    cause.propensities = InterVA.summaries,
+    # CSMFs calculated by summing 'fractional deaths' for each cause,  
+    #   i.e. cause-probabilities for each cause 
+    csmf.fracDeath = csmf.fracDeath,
+    # CSMFs calculated by calculating the fraction of deaths assigned to each cause
+    csmf.topCause = csmf.topCause,
+    # datetime when saved
+    when = format(Sys.time(),"%a %b %d %X %Y"),
+    # deaths
+    deaths = deaths,
+    # SCI
+    sci = SCI
+  )
+  
+  # return list containing various outputs
+  return(ret.list)
+  
+}
+```
+
+Use the InterVA algorithm to identify causes for the test deaths created above, and then look at all the elements of the list of results returned by the *calcInterVA()* function.
+
+```{r}
+# define inputs for test
+# prob.c is set of (marginal) p(c)
+prob.c <- rep(1/nrow(SCIdeaths.SCI),nrow(SCIdeaths.SCI)) # don't know what it is, so uniform distribution
+# prob.c <- csmf # use the correct marginals
+# verify that it's what you expect
+prob.c
+
+# create a 'VAdeaths' dataset from the test deaths
+VAdeaths <- testDeaths[,2:6] # test deaths
+
+# assign causes to the test deaths using the InterVA algorithm
+InterVA.results <- calcInterVA(SCIdeaths.SCI,prob.c,VAdeaths)
+```
+
+Have a look at the results, very similar to the NBC algorithm above.
+
+```{r}
+head(InterVA.results$top.cause)
+```
+
+```{r}
+dim(InterVA.results$top.cause)
+```
+
+```{r}
+head(InterVA.results$cause.propensities)
+```
+
+```{r}
+dim(InterVA.results$cause.propensities)
+```
+
+```{r}
+InterVA.results$csmf.fracDeath
+```
+
+```{r}
+InterVA.results$csmf.topCause
+```
+
+```{r}
+head(InterVA.results$deaths)
+```
+
+```{r}
+InterVA.results$when
+```
+
+```{r}
+InterVA.results$sci
+```
+
+# InSilicoVA 
+
+## InSilicoVA Algorithm
+
+Create a function to implement the InSilicoVA VA coding algorithm.  Comments in the code explain each step.
+
+```{r}
+###### <<Function>>
+calcInSilicoVA <- function(SCI,SCI.c,deaths,samples=500,alpha=0.05) {
+  
+  # implements the InSilicoVA VA algorithm
+  
+  # SCI is a cause x symptoms matrix of SCI conditional probabilities p(s|c)
+  # SCI.c is p(c) 
+  # deaths is a deaths x symptoms matrix of VA deaths containing binary symptom values
+  # samples is the number of samples to take from the joint distribution in the estimation step,
+  #   default to 500
+  # alpha is the Dirichlet alpha parameter, default to 0.05
+  # returns a list containing
+  #   * top.cause: deaths x cause,(largest)cause-probability matrix of InterVA-identified causes
+  #   * cause.probabilities: deaths x cause-probabilities matrix of all cause-probabilities
+  #   * csmf.median: CSMFs calculated as the median of the CSMF distributions
+  #   * csmf.fivenum: five number summary of the CSMF distributions:
+  #   * time: time taken to execute
+  #   * when: date and time when finished
+  #   * pi: array of individual probabilities of being assigned each cause for 
+  #   * Y: array of causes assigned for each sample: sample x causes x deaths
+  #   * C: cause-specific mortality fractions for each sample: sample x causes
+  #   * deaths: the input deaths
+  #   * sci: the input SCI
+
+  # record start time
+  start.time <- Sys.time()
+
+  # InSilicoVA.pi is array of individual probabilities of being assigned each cause for 
+  #   each sample: sample x causes x deaths
+  InSilicoVA.pi <- array(0,dim=c(samples,nrow(SCI),nrow(deaths))) 
+  # InSilicoVA.Y is array of causes assigned for each sample: sample x causes x deaths
+  InSilicoVA.Y <- array(0,dim=c(samples,nrow(SCI),nrow(deaths)))  
+  # InSilicoVA.C stores cause-specific mortality fractions for each sample: sample x causes
+  InSilicoVA.C <- array(0,dim=c(samples,nrow(SCI))) 
+  # C is vector of cause-specific mortality fractions in each sample, initialize to SCI.c
+  C <- SCI.c
+  # Y is array of causes assigned in each sample: causes by deaths
+  Y <- array(0,dim=c(nrow(SCI),nrow(deaths))) 
+  # pi is an array of probabilities of being assigned each cause in each sample: causes by deaths
+  pi <- array(0,dim=c(nrow(SCI),nrow(deaths)))  
+  # m is vector of Dirichlet parameters
+  m <- c(rep(0,nrow(SCI))) 
+  
+  # loop over the sample, in each pass draw one value for the cause assignments and the CSMFs
+  for (samp in 1:samples) {
+    # loop over deaths, initialize pi to first guess of cause-specific mortality fractions
+    for (i in 1:nrow(deaths)) {
+      pi[,i] <- C
+    }
+    # for each death, update the probability of being assigned each cause conditional on current C
+    # loop over deaths
+    for (d in 1:nrow(deaths)) {
+      # loop over symptoms
+      for (s in 1:ncol(SCI)) {	
+        # loop over causes		
+        for (c in 1:nrow(SCI)) {
+          # naive Bayes classifier used to update probabilities of being assigned each cause
+          # multiplies the current fraction of deaths due to that cause by the naive Bayes liklihood 
+          # 	of observing the recorded signs/symptoms for each death, conditional on the cause
+          pi[c,d] <- pi[c,d] * SCI[c,s]^deaths[d,s] * (1-SCI[c,s])^(1-deaths[d,s])
+        }		
+      }	
+    }
+    # draw new causes for each death
+    # loop over deaths
+    for (d in 1:nrow(deaths)) {
+      # draw a cause from a categorical distribution parameterized with the updated probabilities of 
+      #	dying from each cause (death-specific, above)
+      Y[,d] <- rmultinom(1,1,pi[,d])
+      # for each death, record the normalized (sum to 1.0) death-specific probabilities of 
+      #   dying from each cause (the area under the full joint distribution adds to 1.0,
+      #   not the area under the p(c|s) curve for a specific c and s)
+      # loop over causes
+      for (c in 1:nrow(SCI)) {
+        InSilicoVA.pi[samp,c,d] <- pi[c,d]/sum(pi[,d])
+      }
+    }
+    # record the new cause assignments
+    InSilicoVA.Y[samp,,] <- Y
+    # create the updated Dirichlet parameter vector
+    for (c in 1:nrow(SCI)) {
+      # for each cause of death, sum alpha and the total number of deaths just assigned to that cause
+      m[c] <- alpha + sum(Y[c,])
+    }
+    # draw a new set of cause-specific mortality fractions from a Dirichlet using the updated 
+    #   parameter vector
+    C <- rdirichlet(1,m)	
+    # record the updated cause-specific mortality fractions
+    InSilicoVA.C[samp,] <- C
+  }
+  
+  # store the median and mean cause-assignment probabilities
+  # initialize summaries with one row per death and columns for causes
+  InSilicoVA.summaries <- array(0,dim=c(nrow(deaths),(nrow(SCI)*2)))
+  rownames(InSilicoVA.summaries) <- rownames(deaths)
+  # initilize column names
+  sums.colnames <- c()
+  # loop over causes
+  for (c in 1:nrow(SCI)) {
+    # make a column name for median and mean associated with this cause
+    tmp1 <- paste("cause",c,".median",sep="")
+    tmp2 <- paste("cause",c,".mean",sep="")
+    # append the column names 
+    sums.colnames <- c(sums.colnames,tmp1,tmp2)
+  }
+  colnames(InSilicoVA.summaries) <- sums.colnames
+  # calculate and store the median and mean cause-assignment probabilities for each death
+  # loop over deaths
+  for (d in 1:nrow(deaths)) {
+    # loop over causes
+    for (c in 1:nrow(SCI)) {
+      # calculate and store median and mean cause-assignment probabilities
+      InSilicoVA.summaries[d,(c*2-1)] <- round(summary(InSilicoVA.pi[,c,d])[3],4)
+      InSilicoVA.summaries[d,(c*2)] <- round(summary(InSilicoVA.pi[,c,d])[4],4)
+    }
+  }
+  
+  # InSilicoVA.causes are causes with largest median cause-assignment probability
+  InSilicoVA.causes <- data.frame(
+    cause=as.character(rep("",nrow(deaths))),
+    median.probability=rep(0,nrow(deaths)),
+    stringsAsFactors = FALSE
+  )
+  rownames(InSilicoVA.causes) <- rownames(deaths)
+  # loop over deaths
+  for (d in 1:nrow(deaths)) {
+    # loop over causes to calculate median cause-assignment probabilities
+    # initialize medians
+    medians <- rep(0,nrow(SCI))
+    # loop over causes
+    for (c in 1:nrow(SCI)) {
+      # calculate and store the median cause-assignment probability for each cause
+      medians[c] <- summary(InSilicoVA.pi[,c,d])[3]  
+    }
+    # for each death identify the cause with the largest probability and store both
+    #   the cause label and the probability
+    # take the first element from the which() statement because sometimes all values 
+    #   of medians are equal
+    InSilicoVA.causes[d,1] <- paste("cause",which(medians==max(medians))[1],sep="")
+    InSilicoVA.causes[d,2] <- medians[which(medians==max(medians))[1]]
+  }
+
+  # define the CSMFs using median of the CSMF distributions
+  # matrix of cause-specific medians, transpose of apply output to create 1x5 matrix
+  csmf.median <- t(matrix(apply(InSilicoVA.C,2,median,nrow=1)))
+  # make column names
+  # initialize cause labels vector
+  causes <- "cause1"
+  # loop over causes
+  for (c in 2:nrow(SCI)) {
+    # append each cause to the column labels
+    causes <- c(causes,paste("cause",c,sep=""))
+  }
+  colnames(csmf.median) <- causes
+  # label rows - subsitute() returns the name of its input
+  rownames(csmf.median) <- c(paste(substitute(deaths),".median",sep=""))
+  
+  # calculate the five number summary of the CSMF distributions
+  csmf.fivenum <- apply(InSilicoVA.C,2,fivenum)
+  colnames(csmf.fivenum) <- causes
+  rownames(csmf.fivenum) <- c("min","Q1","median","Q3","max")
+  
+  # record end time
+  end.time <- Sys.time()
+  
+  # create list of outputs to return
+  ret.list = list(
+    # deaths x cause,(largest)cause-probability matrix of InterVA-identified causes
+    top.cause = InSilicoVA.causes,
+    # deaths x cause-probabilities matrix of all cause-probabilities
+    cause.probabilities = InSilicoVA.summaries,
+    # CSMFs calculated as the median of the CSMF distributions
+    csmf.median = csmf.median,
+    # five number summary of the CSMF distributions:
+    #   smallest, 1st quartile, median, 3rd quartile, largest
+    csmf.fivenum = csmf.fivenum,
+    # time taken to execute
+    time = end.time - start.time,
+    # datetime when saved
+    when = format(Sys.time(),"%a %b %d %X %Y"),
+    # pi is array of individual probabilities of being assigned each cause for 
+    #   each sample: sample x causes x deaths
+    pi = InSilicoVA.pi,
+    # Y is array of causes assigned for each sample: sample x causes x deaths
+    Y = InSilicoVA.Y,
+    # C stores cause-specific mortality fractions for each sample: sample x causes
+    C = InSilicoVA.C,
+    # deaths
+    deaths = deaths,
+    # SCI
+    sci = SCI
+  )
+  
+  # return list containing various outputs
+  return(ret.list)
+
+}
+```
+
+Assign causes to the test deaths using the InSilicoVA VA cause-coding algorithm.  InSilicoVA is different from the others and uses a sampling procedure to approximate the distributions of CSMFs and cause-assignment probabilities for each death.  Because of this it takes longer to run and produces a number of additional outputs.
+
+```{r}
+# define inputs for test
+# prob.c is set of (marginal) p(c)
+prob.c <- rep(1/nrow(SCIdeaths.SCI),nrow(SCIdeaths.SCI)) # don't know what it is, so uniform distribution
+# prob.c <- csmf # use the correct marginals
+# verify that it's what you expect
+prob.c
+# test
+
+# create a 'VAdeaths' dataset from the test deaths
+VAdeaths <- testDeaths[,2:6] # test deaths
+
+# assign casues to the test deaths using the InSilicoVA VA cause-coding algorithm
+# With 500 samples, InSilicoVA takes about 20 seconds to run on a fast laptop, 
+#   maybe longer on your computer
+InSilicoVA.results <- calcInSilicoVA(SCIdeaths.SCI,prob.c,VAdeaths,500,0.05)
+# for faster testing ...
+# InSilicoVA.results <- calcInSilicoVA(SCIdeaths.SCI,prob.c,VAdeaths,5,0.05)
+```
+
+Have a look at the InSilicoVA resutls. There are outputs simmilar to the NBC and InterVA outputs, and there are additional InSilicoVA-specific outputs.  
+
+```{r}
+head(InSilicoVA.results$top.cause)
+```
+
+InSilicoVA produces estimated distributions of cause-assignment probabilities for each death.  Have a look at the medians and means of those distributions for each death.
+
+```{r}
+head(InSilicoVA.results$cause.probabilities)
+```
+
+InSilicoVA produces estimated distributions of CSMFs.  Have a look at the medians of those distributions.
+
+```{r}
+InSilicoVA.results$csmf.median
+```
+
+Have a look at the five-number summary of the estimated CSMF distributions.
+
+```{r}
+InSilicoVA.results$csmf.fivenum
+```
+
+```{r}
+InSilicoVA.results$time
+```
+
+Have a look at the intermediate values produced by InSilicoVA for the individual cause-assignment probabilities assigned to each death at each iteration.
+
+```{r}
+head(InSilicoVA.results$pi)
+```
+
+There are 500 iterations for 500 deaths; one probability for each of four causes.
+
+```{r}
+dim(InSilicoVA.results$pi)
+```
+
+Have a look at the intermediate values produced by InSilicoVA for the causes assigned to each death at each iteration.
+
+```{r}
+head(InSilicoVA.results$Y)
+```
+
+There are 500 iterations for 500 deaths; one of the four causes is assigned at each iteration.
+
+
+```{r}
+dim(InSilicoVA.results$Y)
+```
+
+Have a look at the intermediate values produced by InSilicoVA for the CSMFs assigned at each iteration.
+
+
+```{r}
+head(InSilicoVA.results$C)
+```
+
+There a CSMF for each of the four causes at each of the 500 iterations.
+
+```{r}
+dim(InSilicoVA.results$C)
+```
+
+```{r}
+InSilicoVA.results$when
+```
+
+```{r}
+head(InSilicoVA.results$deaths)
+```
+
+```{r}
+InSilicoVA.results$sci
+```
+
+## InSilicoVA Plotting
+
+Create a funcion to plot various outputs from InSilicoVA.  The plotting function creates PDF files and saves them in the specified directory.  The plots inlude
+
+  + convergence plots for individual cause-assignment probabilities for each cause for each death
+  + histograms for individual cause-assignment probability distributions for each cause for each death
+  + histograms of estimated CSMF distributions 
+  + boxplots of estimated CSMF disributions
+
+The plotting function requires a 'results' object produced by InSilicoVA.  This contains all the deaths and intermediate values that are required for plotting.  
+
+```{r}
+###### <<Function>>
+plotInSilicoVA <- function(results,path,conv=0,pi=0,csmfH=0,csmfB=0) {
+  
+  # plotting functions for InSilicoVA results
+  
+  # results is an InSilicoVA results list
+  # path points to where you want PDF files save, relative to the working directory
+  #   must be in form './figs/' including last slash
+  # if conv=1, create convergence plots
+  # if pi=1, create histograms of pi
+  # if csmfH=1, create CSMF histograms
+  # if csmfB=1, create CSMF boxplots
+  
+  # create a list of cause names
+  causes <- c("Cause 1")
+  for (c in 2:nrow(results$sci)) {
+    causes <- c(causes,paste("Cause",c))
+  }
+  # create a set of colors, one for each cause
+  colors.cause <- rainbow(nrow(results$sci),alpha=0.5)
+  
+  # grab the deaths from the results
+  deaths <- results$deaths
+  
+  # assess sample convergence: plot the probability of being assigned
+  #   to each cause by sample
+  if (conv==1) {
+    # loop over deaths
+    for (d in 1:nrow(deaths)) {
+      # loop over causes
+      for (c in 1:nrow(results$sci)) {
+        title <- paste("death ",d,","," cause ",c,sep="")
+        file.name <- paste(path,"convergence-death",d,",","cause",c,".pdf",sep="")
+        pdf(file=file.name)
+        # plot pi by sample
+        plot(results$pi[,c,d],ylim=c(0,1),main=title,xlab="Sample",ylab="Probability")
+        dev.off()
+      }
+    }
+  }
+  
+  # a single histogram for each death with all cause-assignment probability distributions
+  if (pi==1) {
+    # loop over deaths
+    for (d in 1:nrow(deaths)) {
+      pdf(paste(path,"cause-distributions-death",d,".pdf",sep=""))
+      hist(results$pi[,1,d],col=colors.cause[1],xlim=c(0,1),main=paste("Death",d),xlab="Probability")
+      for (c in 2:nrow(results$sci)) {
+        hist(results$pi[,c,d],col=colors.cause[c],add=T)
+      }
+      legend("topright",causes,fill=colors.cause)
+      dev.off()
+    }
+  }
+  
+  # plot CSMFs on one plot
+  if (csmfH==1) {
+    pdf(paste(path,"CSMFs.pdf",sep=""))
+    hist(results$C[,1],col=colors.cause[1],main="CSMFs",xlab="Probability",xlim=c(0,1))
+    for (c in 2:nrow(results$sci)) {
+      hist(results$C[,c],col=colors.cause[c],add=T)
+    }
+    legend("topright",causes,fill=colors.cause)
+    dev.off()
+  }
+
+  # boxplots of the CSMFs
+  if (csmfB==1) {
+    pdf(paste(path,"CSMF-boxplots.pdf",sep=""))
+    boxplot(results$C,names=causes,main="Summary of CSMF Distributions")
+    dev.off()
+  }
+  
+}
+```
+
+Test the plotting function. PDFs containing plots will be stored in '../figure/insilicova/'.  This takes some time and saves many files, so evaluation is set to 'FALSE'.  If you want to run it, change that to 'TRUE'.
+
+```{r, eval=FALSE}
+getwd()
+plotInSilicoVA(InSilicoVA.results,"../figure/insilicova/",1,0,0,0)
+plotInSilicoVA(InSilicoVA.results,"../figure/insilicova/",0,1,0,0)
+plotInSilicoVA(InSilicoVA.results,"../figure/insilicova/",0,0,1,0)
+plotInSilicoVA(InSilicoVA.results,"../figure/insilicova/",0,0,0,1)
+```
+
+# Tariff Algorithm
+
+Create a function to implement the Tariff VA coding algorithm.  Comments in the code explain each step.
+
+```{r}
+###### <<Function>>
+calcTariff <- function(GSdeaths,deaths,normalize,resample) {
+
+  # implements the Tariff VA algorithm
+  
+  # GSdeaths is deaths by cause,sypmtoms matrix of gold standard deaths containing 
+  #   reference cause and binary symptoms values
+  # deaths is a deaths x symptoms matrix of VA deaths containing binary symptom values
+  # normalize is boolean indicating whether or not to normalize the tariff sums
+  # resample is a boolean indicating whether or not to resample the gold standard deaths 
+  # returns a list containing
+  #   * top.cause: deaths x cause,tariff-Q matrix of Tariff-identified causes
+  #   * cause.tariffScores: deaths x cause-Q, tariff rank, matrix with all cause-Qs
+  #   * csmf: CSMFs calculated from identified causes
+  #   * when: datetime when saved
+  #   * deaths: input deaths 
+  #   * tariffs: tariff values calculated from gold standard deaths, i.e. SCI for Tariff
+  
+  # calculate the Tariffs from the gold standard deaths
+  
+  # identify the causes in the gold standard deaths
+  causes <- sort(unique(GSdeaths[,1]))
+  # store the number of causes
+  num.causes <- length(causes)
+  # store the number of symptoms
+  num.symptoms <- ncol(GSdeaths)-1
+  # create a vector of cause labels
+  cause.labels <- "cause1"
+  for (i in 2:num.causes) {
+    # create and append the cause label
+    cause.labels <- c(cause.labels,paste("cause",i,sep=""))
+  }
+  # create vector of symptoms labels
+  symptom.labels <- "s1"
+  for (s in 2:num.symptoms) {
+    # create and append the symptom label
+    symptom.labels <- c(symptom.labels,paste("s",s,sep=""))
+  }
+
+  # for each cause, calculate the fraction of deaths with each symptom, the tariff x
+  # initilize the list of (raw) tariff x vectors
+  x <- list()
+  # loop over causes
+  for (c in 1:num.causes) {
+    # calculate the fraction of gold standard deaths that endorse each symptom, a by-symptom vector
+    # append that vector to the list
+    if (normalize) {
+      x[[c]] <- colSums(GSdeaths[which(GSdeaths[,1]==c),2:6])/nrow(SCIdeaths[which(SCIdeaths[,1]==c),])
+    } else {
+      x[[c]] <- colSums(GSdeaths[which(GSdeaths[,1]==c),2:6])
+    }
+  }
+  # create a cause x symptom matrix from the raw tariff list
+  x.mat <- matrix(unlist(x), ncol = 5, byrow = TRUE)
+
+  # create the tariff values by standardizing the (raw) tariff x values using the median 
+  #   and interquartile range *across causes*
+  # create an empty T matrix
+  T <- x.mat-x.mat
+  # calculate the medians of x across causes, i.e. by column
+  medians <- apply(x.mat,2,median)
+  # calculate the interquartile ranges of x across causes
+  iqrs <- apply(x.mat,2,IQR)
+  # loop over causes
+  for (c in 1:num.causes) {
+    # calculate and store the median-IQR standardized tariff values
+    T[c,] <- (x.mat[c,] - medians) / iqrs
+  }
+  colnames(T) <- symptom.labels
+  rownames(T) <- cause.labels
+  
+  # create the gold standard tariff scores for standardizing Q values
+  # resample the gold standard deaths with replacement to create a uniform distribution by cause
+  pi.bootstrap <- rdirichlet(1, rep(1, length(causes)))
+  # n.bootstrap <- round(pi.bootstrap * dim(GSdeaths)[1])
+  n.bootstrap <- table(sample(causes,nrow(GSdeaths),replace=TRUE,prob=pi.bootstrap))
+  # ensure that each cause is sampled at least once
+  for (c in 1:num.causes) {
+    if (is.na(n.bootstrap[c])) {
+      n.bootstrap[c] <- 1
+    }
+  }
+  # create array for bootstrapped gold standard deaths
+  GSdeaths.bootstrap <-  array(0,dim=c(sum(n.bootstrap), ncol(GSdeaths)))
+  
+  # sample the gold standard deaths with replacement by cause with the number for each cause
+  #   determined by the dirichlet sample drawn just above
+  # initialize the index for the array of bootstrapped gold standard deaths to 0, 
+  #   none stored yet
+  nsum <- 0
+  # loop over causes
+  for(c in 1:length(causes)){
+    # store the number of deaths to sample for this cause
+    nn <- n.bootstrap[c]
+    # store the sampled deaths for this cause in the bootstrapped gold standard deaths array
+    GSdeaths.bootstrap[(nsum+1):(nsum+nn),] <- 
+      GSdeaths[sample(which(GSdeaths[,1]==c),nn,replace=TRUE),]
+    # increment the index for the array of bootstrapped gold standard deaths by the number of 
+    #   deaths just sampled for this cause
+    nsum <- nsum + nn
+  }
+  # ensure that the bootstrapped data set has at most the original number of deaths
+  GSdeaths.bootstrap <- GSdeaths.bootstrap[1:nrow(GSdeaths),]
+
+  # pick the gold standard deaths to use when calculating the gold standard tariff scores, just below
+  #   if 'resample' is TRUE, then use the resampled (bootstrapped) gold standard deaths
+  if (resample) {
+    GSdeaths.S <- GSdeaths.bootstrap
+  } else {
+    GSdeaths.S <- GSdeaths 
+  }
+
+  # create the gold standard tariff scores for each cause and each death for 
+  #   standardizing Q values, later
+  # initilize a deaths x causes array of S values
+  S.gs <-  array(0,dim=c(nrow(GSdeaths.S),num.causes))  
+  # loop over gold standard deaths
+  for (d in 1:nrow(GSdeaths.S)) {
+    # loop over causes
+    for (c in 1:num.causes) {
+      # loop over symptoms
+      for (s in 1:num.symptoms) {
+        # calculate and store the tariff score for this death and cause
+        S.gs[d,c] <- S.gs[d,c] + T[c,s] * GSdeaths.S[d,(s+1)] 
+      }
+    }
+  }
+ 
+  # implement cause-assignment using tariffs
+  
+  # calculate tariff scores for each cause for each death in the data (not gold standard)
+  # initialize a deaths x cause arrage of S
+  S <-  array(0,dim=c(nrow(deaths),num.causes))  
+  # loop over deaths
+  for (d in 1:nrow(deaths)) {
+    # loop over causes
+    for (c in 1:num.causes) {
+      # loop over symptoms
+      for (s in 1:num.symptoms) {
+        # calcualte and store the tariff score for this death and cause
+        S[d,c] <- S[d,c] + T[c,s] * deaths[d,s] 
+      }
+    }
+  }
+  
+  # calculate tariff score rank in the gold standard distribution of tariff scores by cause
+  # create an empty Q matrix
+  Q <- S-S
+  # loop over deaths
+  for (d in 1:nrow(deaths)) {
+    # loop over causes
+    for (c in 1:num.causes) {
+      # rank of the tariff score for this cause in the distribution of gold standard tariff 
+      #   scores for this cause add the tariff score for this death to the gold standard 
+      #   distribuion and calculate a normalized rank score
+      Q[d,c] <- tail(rank(c(S.gs[which(GSdeaths[,1]==c),c],S[d,c]))
+                     /length(c(S.gs[which(GSdeaths[,1]==c),c],S[d,c])),n=1)
+    }
+  }
+  
+  # for each death identify causes with largest tariff scores
+  # create an empty data frame to hold results
+  Tariff.causes <- data.frame(
+    cause=as.character(rep("",nrow(deaths))),
+    Q=rep(0,nrow(deaths)),
+    stringsAsFactors = FALSE
+  )
+  rownames(Tariff.causes) <- rownames(deaths)
+  # loop over deaths 
+  for (d in 1:nrow(deaths)) {
+    # identify and store the cause and Q value for the cause with the largest Q for this death
+    Tariff.causes[d,1] <- paste("cause",which(Q[d,]==max(Q[d,]))[1],sep="")
+    Tariff.causes[d,2] <- Q[d,which(Q[d,]==max(Q[d,]))[1]]
+  }
+  
+  # store all Tariff results
+  Tariff.summaries <- Q
+  rownames(Tariff.summaries) <- rownames(deaths)
+  # create a vector of tariff Q labels
+  causes.tariff <- c("cause1.Q")
+  for (c in 2:num.causes) {
+    # create and append each tariff Q label
+    causes.tariff <- c(causes.tariff,paste("cause",c,".Q",sep=""))
+  }
+  colnames(Tariff.summaries) <- causes.tariff
+  
+  # calcualte and store tariff CSMFs
+  # initialize vector of CSMFs
+  csmf <- c()
+  # loop over causes
+  for (c in 1:num.causes) {
+    # calculate the fraction of deaths assigned to this cause and append to the vector
+    csmf <- c(csmf,length(which(Tariff.causes[,1]==paste("cause",c,sep="")))/nrow(deaths))
+  }
+  # create a matrix from the vector
+  csmf <- matrix(csmf,nrow=1)
+  colnames(csmf) <- cause.labels
+  # label rows - subsitute() returns the name of its input
+  rownames(csmf) <- c(substitute(deaths))
+  
+  # create list of outputs to return
+  ret.list = list(
+    # deaths x cause,tariff-Q matrix of Tariff-identified causes
+    top.cause = Tariff.causes,
+    # deaths x cause-Q, tariff rank, matrix with all cause-Qs
+    cause.tariffScores = Tariff.summaries,
+    # CSMFs calculated from identified causes
+    csmf = csmf,
+    # datetime when saved
+    when = format(Sys.time(),"%a %b %d %X %Y"),
+    # deaths
+    deaths = deaths,
+    # SCI
+    tariffs = T
+  )
+  
+  # return list containing various outputs
+  return(ret.list)
+  
+}
+```
+
+Use the Tariff algorithm to identify causes for the test deaths created above, and then look at all the elements of the list of results returned by the *calcTariff()* function.
+
+```{r}
+# create a 'VAdeaths' dataset from the test deaths
+VAdeaths <- testDeaths[,2:6] # test deaths
+
+# assign causes to the test deaths using the InterVA algorithm
+# set 'normalize' to TRUE and 'resample' to TRUE so that Tariff is run the way it was originally written 
+Tariff.results <- calcTariff(SCIdeaths,VAdeaths,TRUE,TRUE)
+```
+
+Tariff causes are assigned by choosing the cause with the largest normalized Tariff Score, Q, value.
+
+```{r}
+head(Tariff.results$top.cause)
+```
+
+Tariff does not produce probabilities for each cause.  What it does produce are normalized Tariff Scores or 'Q' values.  Have a look at those for each cause for each death
+
+```{r}
+head(Tariff.results$cause.tariffScores)
+```
+
+Tariff CSMFs are calculated by summing assigned causes.
+
+```{r}
+Tariff.results$csmf
+```
+
+```{r}
+Tariff.results$when
+```
+
+```{r}
+head(Tariff.results$deaths)
+```
+
+```{r}
+Tariff.results$tariffs
+```
+
+# Tools for Comparing Results Produced by Each Algorithm and Characterizing the Performance the Algorithms
+
+Create a function to calculate the number of discordant deaths among results from all of the algorithms.
+
+```{r}
+###### <<Function>>
+calcConcordance <- function(topCauses,refDeaths) {
+  
+  # calculate concordance among real cause and assigned causes
+  
+  # topCauses is a named list of top assigned causes, e.g.
+    # topCauses <- list(
+    #   NBC =  NBC.results$top.cause,
+    #   InterVA = InterVA.results$top.cause,
+    #   InSilicoVA = InSilicoVA.results$top.cause,
+    #   Tariff = Tariff.results$top.cause
+    # )
+  # refDeaths is a set of deaths with a reference cause, e.g.
+    # refCSMF <- testDeaths.CSMF
+  # returns a list containing
+  #   * discordant, matrix of discordant cause counts
+  #   * percent.correct, matrix of percent count of causes that are the same 
+  
+  # creat a dataframe with the cause assignments from all the inputs
+  # first, strip off the cause-assignment probabilities, etc.
+  # loop over the inputs
+  for (i in 1:length(topCauses)) {
+    # store just the cause label for this input
+    tmp <- topCauses[[i]][,1]
+    # bring the death names along as labels for the causes
+    names(tmp) <- rownames(topCauses[[i]])
+    # store the assigned causes back into the 'topCauses' list
+    topCauses[[i]] <- tmp
+  }
+  # second, merge the inputs into a dataframe
+  # merge on the row names that identify the deaths, the ensures that deaths are 
+  #   matched across inputs
+  # merge the first two inputs' assigned causes and store in a dataframe called 'cause.df'
+  cause.df <- merge(topCauses[[1]],topCauses[[2]],by="row.names")
+  # assign the merged death names to rownames of the dataframe
+  rownames(cause.df) <- cause.df$Row.names
+  # remove the merged death names column from the dataframe
+  cause.df <- cause.df[,2:ncol(cause.df)]
+  # name the columns of the dataframe using the names from teh 'topCauses' list
+  colnames(cause.df) <- c(names(topCauses)[1:2])
+  # if there are more than two inputs, repeat the previous few steps for the remainder of the inputs
+  if (length(topCauses)>2) {
+    for (i in 3:length(topCauses)) {
+      column.names <- c(colnames(cause.df),names(topCauses)[i])
+      cause.df <- merge(cause.df,topCauses[[i]],by="row.names")
+      rownames(cause.df) <- cause.df$Row.names
+      cause.df <- cause.df[,2:ncol(cause.df)]
+      colnames(cause.df) <- column.names
+    }
+  }
+
+  # identify all the cause names
+  # initialize a vector of all the cause names using the names from the first input
+  cause.names <- as.character(cause.df[,1])
+  head(cause.names)
+  # loop over the inputs, columns in 'cause.df'
+  for (c in 2:ncol(cause.df)) {
+    # append the cause names for this input
+    cause.names <- c(cause.names,as.character(cause.df[,c]))
+  }
+  # find the set of unique cause names
+  cause.names <- unique(cause.names)
+  # store number of unique cause names
+  causes <- length(cause.names)
+  # store the levels of the cause names 
+  cause.levels <- levels(as.factor(cause.names))
+  # recode test death causes from numeric labels to character, i.e. 'cause1' or 'cause2'
+  # initialize new cause labels vector
+  refDeaths.causes <- rep("",nrow(refDeaths))
+  # create recode string
+  recode.str <- "1='cause1'"
+  # loop over causes
+  for (c in 2:causes) {
+    recode.str <- paste(recode.str,";",c,"='cause",c,"'",sep="")
+  }
+  # recode!
+  refDeaths.causes <- recode(refDeaths[,1],recode.str)
+
+  # add real causes to Results.causes
+  # store the existing column names
+  column.names <- colnames(cause.df)
+  # merge the reference death causes 
+  cause.df <- merge(refDeaths.causes,cause.df,by="row.names")
+  # name the deaths using the merged death names
+  rownames(cause.df) <- cause.df[,1]
+  # remove the merged death names column
+  cause.df <- cause.df[,2:ncol(cause.df)]
+  # name the columns
+  colnames(cause.df) <- c("Reference",column.names)
+  # ensure that all columns of 'cause.df' have the same levels
+  for (c in 1:ncol(cause.df)) {
+    levels(cause.df[,c]) <- cause.levels
+  }
+  
+  # count discordant causes for all combinations of inputs and refernece cause
+  # number of inputs and reference
+  comparitors <- ncol(cause.df)
+  # initialize array of discordant counts
+  discordant <- array(0,dim=c(comparitors,comparitors))  
+  # loop over comparitors
+  for (ref in 1:comparitors) {
+    # loop over comparitors
+    for (comp in 1:comparitors) {
+      # count dicordant causes for current combination of comparitors
+      discordant[ref,comp] <- length(which(cause.df[,ref]!=cause.df[,comp]))
+    }
+  }
+  # name the rows and columns of discordant with the names of the comparitors
+  rownames(discordant) <- colnames(cause.df)
+  colnames(discordant) <- colnames(cause.df)
+
+  # create the return list
+  ret <- list(
+    # the discordant matrix
+    discordant = discordant,
+    # the percent correct matrix
+    percent.correct = 100-100*discordant/nrow(VAdeaths)
+  )
+  
+  return(ret)
+  
+}
+```
+
+Calculate the discordant and percent correct matrices for all the results generated so far.
+
+```{r}
+# test
+# creat a named list of the top cause assignments
+topCauses <- list(
+  NBC =  NBC.results$top.cause,
+  InterVA = InterVA.results$top.cause,
+  InSilicoVA = InSilicoVA.results$top.cause,
+  Tariff = Tariff.results$top.cause,
+  InSilicoVA = InSilicoVA.results$top.cause,
+  Tariff = Tariff.results$top.cause
+)
+# calculate and have a look at the concordance matrices
+# InSilicoVA and Tariff included twice to test the ability to include an arbitrary number of inputs  
+concordance <- calcConcordance(topCauses,testDeaths)
+```
+
+Have a look at the discordant matrix.
+
+```{r}
+concordance$discordant
+```
+
+Have a look at the percent correct matrix.
+
+```{r}
+concordance$percent.correct
+```
+
+Create a function to calculate CSMF Accuracies to compare CSMFs produced by all four algorithms to the CSMFs of the reference deaths.
+
+```{r}
+###### <<Function>>
+calcCSMFaccuracies <- function(CSMFs,refCSMF) {
+
+  # calculate CSMF accuracies, etc.
+  
+  # CSMFs is a named list of variable number algorithm result objects, e.g.
+    # CSMFs <- list(
+    #   NBC.frac = NBC.results$csmf.fracDeath,
+    #   NBC.top = NBC.results$csmf.topCause,
+    #   InterVA.frac = InterVA.results$csmf.fracDeath,
+    #   InterVA.top = InterVA.results$csmf.topCause,
+    #   InSilicoVA = InSilicoVA.results$csmf.median,
+    #   Tariff = Tariff.results$csmf
+    # )
+  # refCSMF is a reference set of CSMFs produced by calcCSMF(), e.g.
+    # refCSMF <- testDeaths.CSMF
+  # returns a list containing
+  #   * CSMF.errors, raw CSMF errors compared to the reference
+  #   * CSMF.tae, total absolute errors
+  #   * CSMF.percErr, percent proportional errors
+  #   * CSMF.percErr.tae, total absolute percent proportional errors
+  #   * CSMF.accuracies, CSMF Accuracies
+  
+  # wrap up CSMFs nicely
+  CSMF.mat <- rbind(refCSMF,CSMFs[[1]])
+  for (c in 2:length(CSMFs)) {
+    CSMF.mat <- rbind(CSMF.mat,CSMFs[[c]])
+  }
+  rownames(CSMF.mat) <- c("reference",names(CSMFs))
+  CSMF.mat
+  
+  # Error in CSMF, subtract first (reference) row from all rows
+  CSMF.errors <- sweep(CSMF.mat,2,CSMF.mat[1,])
+  # total absolute error in CSMFs
+  CSMF.tae <- rowSums(abs(CSMF.errors))
+  
+  # proportional error
+  CSMF.percErr <- 100*sweep(CSMF.errors,2,CSMF.mat[1,],FUN="/")
+  # total absolute proportional error
+  CSMF.percErr.tae <- rowSums(abs(CSMF.percErr))
+  
+  # CSMF accuracy
+  CSMF.accuracies <- c()
+  for (i in 1:nrow(CSMF.mat)) {
+    CSMF.accuracies <- 
+      c(CSMF.accuracies, 1 - sum(abs(CSMF.mat[i,] - CSMF.mat[1,])) / (2 * (1 - min(CSMF.mat[1,]))))
+  }
+  names(CSMF.accuracies) <- rownames(CSMF.mat)
+  CSMF.accuracies
+  
+  ret <- list(
+    CSMF.errors = CSMF.errors,
+    CSMF.tae = CSMF.tae,
+    CSMF.percErr = CSMF.percErr,
+    CSMF.percErr.tae = CSMF.percErr.tae,
+    CSMF.accuracies = CSMF.accuracies
+  )
+  
+  return(ret)
+  
+}
+```
+
+Calculate and comapare the CSMF Accuracies of all four algorithms.
+
+```{r}
+# test
+# create named list of CSMFs; names will be used throughout, so must be meaningful
+# repeats test for expandable list of inputs
+CSMFs <- list(
+  NBC.frac = NBC.results$csmf.fracDeath,
+  NBC.top = NBC.results$csmf.topCause,
+  InterVA.frac = InterVA.results$csmf.fracDeath,
+  InterVA.top = InterVA.results$csmf.topCause,
+  InSilicoVA = InSilicoVA.results$csmf.median,
+  Tariff = Tariff.results$csmf,
+  InterVA.top = InterVA.results$csmf.topCause,
+  InSilicoVA = InSilicoVA.results$csmf.median
+)
+# calculate CSMF accuracies
+CSMF.accuracies <- calcCSMFaccuracies(CSMFs,testDeaths.CSMF)
+CSMF.accuracies$CSMF.accuracies
+```
+
+The larger the CSMF Accuracy, the closer the algorithm came to the truth or reference deaths.  A value of 1.0 means that the CMSFs match the reference deaths exactly.  This is always true when the reference deaths are compared to themsevles, 'cause' above, and usually InSilicoVA is has the largest CSMF Accuracy in this test.  The consistent ranking is InSilicoVA followed by either InterVA.top or Tariff.  
+
+# Cross Validation
+
+Create a function to run a cross validation simulation.  The inputs are a set of SCI and a set of CSMFs. A set of deaths are simulated using those and then sampled using an input sampling fraction.  The sample of deaths are used to prepare a set of SCI, and the remaining deaths are used as test deaths.  Starting from the simulated deaths, the idea is to test the algorithms using the same SCI, and additionally, having that SCI come from the same population of deaths.  The algorithms are all run using the prepared SCI and tested on the same test deaths, and the results from each are compared.
+
+```{r}
+crossValidate <- function(SCI.denovo,csmf,sim.deaths,samp.frac,insilico.reps=500,insilico.alpha=0.05) {
+
+  # run a cross validation set
+  #   * simulate deaths
+  #   * draw a sample of the simulated deaths
+  #   * use the sample to create SCI
+  #   * run all the algorithms using the SCI from the sample to assign
+  #     casues to the deaths that were not sampled, the 'test deaths'
+  #   * compare the assigned causes from each algorithm to the real 
+  #     causes in the test deaths
+  
+  # SCI.denovo is a list of <symptom>-element SCI vectors, one for each cause
+  # csmf is a <cause>-element vector of CSMFs
+  # sim.deaths is number of deaths to simulate
+  # samp.frac is a decimal number representing the fraction of deaths to sample
+  # insilico.reps is the number of sampling repetitions for InSilicoVA
+  # insilico.alpha is InSilicoVA's alpha parameter
+  
+  # returns a list of
+  #   * simDeaths, a matrix of the simulated deaths 
+  #   * result objects for each algorithm, NBC.results, etc.
+  #   * concordance, a concordance object comparing the results
+  #   * CSMF.accuracies, a CSMF accuracies object comparing CSMF results
+  
+  # store SCI defined above
+  SCI <- storeSCI(SCI.denovo)
+  # simulate a bunch of deaths using the SCI and csmf defined above
+  simDeaths <- simulateDeaths(sim.deaths,csmf,SCI)
+  # draw sample for to prepare SCI
+  sample <- sample(nrow(simDeaths),samp.frac*nrow(simDeaths))
+  # select the sampled deaths to be used to create SCI
+  SCIdeaths <- simDeaths[sample,]
+  # select the inverse of the sample as deaths for testing
+  testDeaths <- simDeaths[(-sample),]
+  # calcualte teh CSMF of the SCI and test deaths
+  testDeaths.CSMF <- calcCSMF(testDeaths)
+  # calcualte SCI from the SCI deaths
+  SCIdeaths.SCI <- calcSCI(SCIdeaths)
+  
+  # create a starting p(c) for all the methods, a uniform distribution
+  prob.c <- rep(1/nrow(SCIdeaths.SCI),nrow(SCIdeaths.SCI)) 
+  VAdeaths <- testDeaths[,2:6]
+  # run NBC
+  NBC.results <- calcNBC(SCIdeaths.SCI,prob.c,VAdeaths)
+  # run InterVA
+  InterVA.results <- calcInterVA(SCIdeaths.SCI,prob.c,VAdeaths)
+  # run InSilicoVA - it take a lot longer!
+  InSilicoVA.results <- calcInSilicoVA(SCIdeaths.SCI,prob.c,VAdeaths,insilico.reps,insilico.alpha)
+  # run Tariff
+  Tariff.results <- calcTariff(SCIdeaths,VAdeaths,TRUE,TRUE)
+  
+  # concordance
+  topCauses <- list(
+    NBC =  NBC.results$top.cause,
+    InterVA = InterVA.results$top.cause,
+    InSilicoVA = InSilicoVA.results$top.cause,
+    Tariff = Tariff.results$top.cause
+  )
+  # calculate and have a look at the concordance matrices
+  concordances <- calcConcordance(topCauses,testDeaths)
+
+  # CSMF accuracies
+  # create named list of CSMFs; names will be used throughout, so must be meaningful
+  CSMFs <- list(
+    NBC.frac = NBC.results$csmf.fracDeath,
+    NBC.top = NBC.results$csmf.topCause,
+    InterVA.frac = InterVA.results$csmf.fracDeath,
+    InterVA.top = InterVA.results$csmf.topCause,
+    InSilicoVA = InSilicoVA.results$csmf.median,
+    Tariff = Tariff.results$csmf
+  )
+  # calculate CSMF accuracies
+  CSMF.accuracies <- calcCSMFaccuracies(CSMFs,testDeaths.CSMF)
+
+  # make a return list
+  rep <- list(
+    simDeaths = simDeaths,
+    NBC.results = NBC.results,
+    InterVA.results = InterVA.results,
+    InSilicoVA.results = InSilicoVA.results,
+    Tariff.results = Tariff.results,
+    concordance.list = concordances,
+    CSMFaccuracies.list = CSMF.accuracies
+  )
+  
+  return(rep)
+
+}    
+```
+
+Test the cross validation function.
+
+```{r}
+# test: run a simulation
+# create de novo SCI consisting of conditional probabilities p(s|c): causes x 5 symptoms
+# you can add or subtract causes, i.e. rows below
+SCI.denovo <- list()
+SCI.denovo[[1]] <- c(0.90,  0.40,  0.10,  0.01,  0.80)
+SCI.denovo[[2]] <- c(0.30,  0.41,  0.80,  0.75,  0.90)
+SCI.denovo[[3]] <- c(0.10,  0.01,  0.01,  0.95,  0.80)
+SCI.denovo[[4]] <- c(0.05,  0.90,  0.75,  0.50,  0.20)
+# define a set of CSMFs, fraction of deaths that are for each cause: cause1, cause2, etc.
+csmf <- c(0.25,0.45,0.2,0.1)
+# number of deaths to simulate
+sim.deaths <- 1000
+# sample for preparing SCI
+samp.frac <- 0.5
+# run the cross validation; leave the InSilicoVA parameters at their default values
+crossVal <- crossValidate(SCI.denovo,csmf,sim.deaths,samp.frac)
+```
+
+Have a look at the percent correct cause assignments,
+
+```{r}
+crossVal$concordance.list$percent.correct
+```
+
+and the CSMF Accuracies.
+
+```{r}
+crossVal$CSMFaccuracies.list$CSMF.accuracies
+```
+
+Now conduct do 50 simulations and have a look at the average performance of the algorithms
+
+```{r}
+# InSilicoVA iterations
+# insilico.iter <- 500
+insilico.iter <- 500
+# number of cross validation simulations to run
+# sims <- 250
+sims <- 250
+# list to store CSMF comparisons from each
+csmf.list <- list()
+# number of deaths to simulate
+# sim.deaths <- 1000
+sim.deaths <- 1000
+# list to store discordant matrices from each 
+discord.list <- list()
+# loop over the simulations
+for (sim in 1:sims) {
+
+  # print the sim number  
+  print(sim)
+  # run the cross validation
+  crossVal <- crossValidate(SCI.denovo,csmf,sim.deaths,samp.frac,insilico.iter)
+  # store the csmf comparisons and concordance matrix
+  csmf.list[[sim]] <- crossVal$CSMFaccuracies.list$CSMF.accuracies
+  discord.list[[sim]] <- crossVal$concordance.list$percent.correct
+
+}
+```
+
+Have a look at the results.  First calculate the fraction of the number of simulations won by each algorithm in terms of CSMF Accuracy.
+
+```{r}
+# create a matix of CSMF Accuracies - rows are simulations, columns are CSMF Accuracies for each algorithm
+# the number of columns is the number of CSMF accuracies
+csmf.mat <- matrix(unlist(csmf.list),ncol=length(csmf.list[[1]]),byrow=TRUE)
+# name the columns of csmf.mat using the algorithm names from the CSMF Accuracies
+colnames(csmf.mat) <- names(csmf.list[[1]])
+# remove the 'reference' CSMF Accuracy
+csmf.mat <- csmf.mat[,2:ncol(csmf.mat)]
+# identify the maximum CSMF Accuracy by row, i.e. which algorithm won
+csmf.max <- apply(csmf.mat,1,max)
+# loop through the simulations, rows, and identify which column has the maximum CSMF Accuracy
+csmf.winner <- c()
+for (s in 1:length(csmf.max)) {
+  csmf.winner <- c(csmf.winner,which(csmf.mat[s,]==csmf.max[s]))
+}
+# create a table of the fraction of simulations won by each algorithm
+winner.fracs <- table(csmf.winner)/length(csmf.max)
+# identify the names of the winning algorithms and label the winner.fracs columns
+names(winner.fracs) <- colnames(csmf.mat)[as.numeric(names(winner.fracs))]
+# display the winning fractions as percents: percent of cross validation simulations won by each algorithm
+100*winner.fracs 
+```
+
+Now compare the average across all simulations of the percent correct cause assignments for each algorithm.
+
+```{r}
+# create a matrix of zeroes corresponding to the matrix of percent correct cause assignments
+d <- discord.list[[1]] - discord.list[[1]]
+# loop over allf the simulations and cummulate the percent correct  
+for (i in 1:sims) {
+  d <- d + discord.list[[i]]
+}
+# divide the total discordant counts by the number of simulations
+d <- round(d/sims,0)
+# average percent correct cause cause assignments in 'sims' simulations
+d 
+```
+
+# Characterizing the Effects of SCI
+
+Changing the SCI should have an effect on how VA algorithms assign causes. Below we conduct a heuristic exploration of this effect by creating different SCI and then using them with each algorithm to assign causes to the test deaths. We compare the results to those produced by running each algorithm on the test deaths using the correct SCI, i.e. the SCI produced from the complementary sample of the simulated deaths, above.  
+
+Start by defining SCI, simulating deaths with that SCI, and dividing the simulated deaths into 'SCI' and 'test deaths' by drawing a random sample - same as above.  
+
+```{r}
+# create de novo SCI consisting of conditional probabilities p(s|c): causes x 5 symptoms
+# you can add or subtract causes, i.e. rows below
+SCI.denovo <- list()
+SCI.denovo[[1]] <- c(0.90,  0.40,  0.10,  0.01,  0.80)
+SCI.denovo[[2]] <- c(0.30,  0.41,  0.80,  0.75,  0.90)
+SCI.denovo[[3]] <- c(0.10,  0.01,  0.01,  0.95,  0.80)
+SCI.denovo[[4]] <- c(0.05,  0.90,  0.75,  0.50,  0.20)
+# define a set of CSMFs, fraction of deaths that are for each cause: cause1, cause2, etc.
+# number of deaths to simulate
+sim.deaths <- 1000
+csmf <- c(0.25,0.45,0.2,0.1)
+# sample for preparing SCI
+samp.frac <- 0.5
+
+# store SCI defined above
+SCI <- storeSCI(SCI.denovo)
+# simulate a bunch of deaths using the SCI and csmf defined above
+simDeaths <- simulateDeaths(sim.deaths,csmf,SCI)
+head(simDeaths)
+
+# draw sample for to prepare SCI
+sample <- sample(nrow(simDeaths),samp.frac*nrow(simDeaths))
+# select the sampled deaths to be used to create SCI
+SCIdeaths <- simDeaths[sample,]
+# select the inverse of the sample as deaths for testing
+testDeaths <- simDeaths[(-sample),]
+```
+
+Calculate the CSMFs of the test deaths.
+
+```{r}
+# calcualte the CSMF of the SCI and test deaths
+testDeaths.CSMF <- calcCSMF(testDeaths)
+```
+
+Create SCI from the 'sample' deaths.  This is the *true* SCI derived from deaths that are indistinguishable from the test deaths.
+
+```{r}
+# calcualte SCI from the SCI deaths
+SCIdeaths.SCI <- calcSCI(SCIdeaths)
+```
+
+Create a couple convenience functions to use when creating modified SCI.  *logi()* calculates the logit transform of a number between 0 and 1 and effectively stretches them onto the whole real line.  *expit()* is its inverse.
+
+```{r}
+logit <- function(x) {log(x/(1-x))}
+expit <- function(x) {exp(x)/(1+exp(x))}
+```
+
+Now create a modified SCI matrix.  Start with the real SCI and massage it a bit, and have a look at what's happening as you go.
+
+```{r}
+# vector of modifications that can be edited easily
+# first element scales whole SCI up or down, around 1.0
+# the rest modify symptoms 2,3,5 and cause 3, below
+mods <- c(
+  1.5,
+  -0.5,
+  0.9,
+  0.7,
+  -0.7
+)
+
+# scale the whole SCI matrix
+SCI.less <- expit(logit(SCI) * mods[1])
+# initialize SCI.modified with SCI.less
+SCI.modified <- SCI.less
+
+# reduce the influence of symptom 2 on logit scale
+SCI.modified[,2] <- expit(logit(SCI.less[,2]) + mods[2])
+# increase the influence of symptom 3 by 20% on logit scale
+SCI.modified[,3] <- expit(logit(SCI.less[,3]) + mods[3])
+# increase the influence of symptom 5 by 75% on logit scale
+SCI.modified[,5] <- expit(logit(SCI.less[,5]) + mods[4])
+# make all symptoms less likely for cause 3
+SCI.modified[3,] <- expit(logit(SCI.less[3,]) + mods[5])
+```
+
+Have a look at the original SCI compared to the modified SCI.
+
+```{r}
+SCI
+SCI.modified
+SCI-SCI.modified
+```
+
+Run all the algorithms as we have done before using 1) the true SCI, and 2) the modified SCI.  Store the results of both.  
+
+```{r}
+# create a starting p(c) for all the methods, a uniform distribution
+prob.c <- rep(1/nrow(SCIdeaths.SCI),nrow(SCIdeaths.SCI)) 
+VAdeaths <- testDeaths[,2:6]
+
+# run NBC
+NBC.results <- calcNBC(SCIdeaths.SCI,prob.c,VAdeaths)
+NBC.results.modified <- calcNBC(SCI.modified,prob.c,VAdeaths)
+# have a look at the results
+topCauses <- list(
+  NBC =  NBC.results$top.cause,
+  NBC.mod = NBC.results.modified$top.cause
+)
+# calculate and have a look at the concordance matrices
+concordance.nbc <- calcConcordance(topCauses,testDeaths)
+concordance.nbc$discordant
+concordance.nbc$percent.correct
+# calculate and have a look at the CSMF Accuracies
+CSMFs <- list(
+  NBC = NBC.results$csmf.topCause,
+  NBC.mod = NBC.results.modified$csmf.topCause
+)
+# calculate CSMF accuracies
+CSMF.accuracies.nbc <- calcCSMFaccuracies(CSMFs,testDeaths.CSMF)
+CSMF.accuracies.nbc$CSMF.accuracies
+
+# run InterVA
+InterVA.results <- calcInterVA(SCIdeaths.SCI,prob.c,VAdeaths)
+InterVA.results.modified <- calcInterVA(SCI.modified,prob.c,VAdeaths)
+# have a look at the results
+topCauses <- list(
+  InterVA =  InterVA.results$top.cause,
+  InterVA.mod = InterVA.results.modified$top.cause
+)
+# calculate and have a look at the concordance matrices
+concordance.interva <- calcConcordance(topCauses,testDeaths)
+concordance.interva$discordant
+concordance.interva$percent.correct
+# calculate and have a look at the CSMF Accuracies
+CSMFs <- list(
+  InterVA = InterVA.results$csmf.topCause,
+  InterVA.mod = InterVA.results.modified$csmf.topCause
+)
+# calculate CSMF accuracies
+CSMF.accuracies.interva <- calcCSMFaccuracies(CSMFs,testDeaths.CSMF)
+CSMF.accuracies.interva$CSMF.accuracies
+
+# run InSilicoVA - it take a lot longer!
+InSilicoVA.results <- calcInSilicoVA(SCIdeaths.SCI,prob.c,VAdeaths,500,0.05)
+InSilicoVA.results.modified <- calcInSilicoVA(SCI.modified,prob.c,VAdeaths,500,0.05)
+# have a look at the results
+topCauses <- list(
+  InSilicoVA =  InSilicoVA.results$top.cause,
+  InSilicoVA.mod = InSilicoVA.results.modified$top.cause
+)
+# calculate and have a look at the concordance matrices
+concordance.insilicova <- calcConcordance(topCauses,testDeaths)
+concordance.insilicova$discordant
+concordance.insilicova$percent.correct
+# calculate and have a look at the CSMF Accuracies
+CSMFs <- list(
+  InSilicoVA = InSilicoVA.results$csmf.median,
+  InSilicoVA.mod = InSilicoVA.results.modified$csmf.median
+)
+# calculate CSMF accuracies
+CSMF.accuracies.insilicova <- calcCSMFaccuracies(CSMFs,testDeaths.CSMF)
+CSMF.accuracies.insilicova$CSMF.accuracies
+
+# run Tariff
+Tariff.results <- calcTariff(SCIdeaths,VAdeaths,TRUE,TRUE)
+# simulate 'gold standard' deaths from the modified SCI for Tariff to use
+SCIDeaths.modified <- simulateDeaths(sim.deaths,csmf,SCI.modified)
+head(SCIDeaths.modified)
+# run Tariff with the deaths simulated from the modified SCI
+Tariff.results.modified <- calcTariff(SCIDeaths.modified,VAdeaths,TRUE,TRUE)
+# have a look at the results
+topCauses <- list(
+  Tariff =  Tariff.results$top.cause,
+  Tariff.mod = Tariff.results.modified$top.cause
+)
+# calculate and have a look at the concordance matrices
+concordance.tariff <- calcConcordance(topCauses,testDeaths)
+concordance.tariff$discordant
+concordance.tariff$percent.correct
+# calculate and have a look at the CSMF Accuracies
+CSMFs <- list(
+  Tariff = Tariff.results$csmf,
+  Tariff.mod = Tariff.results.modified$csmf
+)
+# calculate CSMF accuracies
+CSMF.accuracies.tariff <- calcCSMFaccuracies(CSMFs,testDeaths.CSMF)
+CSMF.accuracies.tariff$CSMF.accuracies
+```
+
+Review the CSMF Accuracies of each combination of SCI and algorithm, starting with NBC.
+
+```{r}
+CSMF.accuracies.nbc$CSMF.accuracies
+```
+
+InterVA.
+
+```{r}
+CSMF.accuracies.interva$CSMF.accuracies
+```
+
+InSilicoVA.
+
+```{r}
+CSMF.accuracies.insilicova$CSMF.accuracies
+```
+
+Tariff.
+
+```{r}
+CSMF.accuracies.tariff$CSMF.accuracies
+```
+
+Now have a look at how badly each algorithm's performance was degraded by using the modfied SCI.  True CSMF Accuracy minus that produced using the modified SCI.
+
+NBC.
+
+```{r}
+CSMF.accuracies.nbc$CSMF.accuracies[2] - CSMF.accuracies.nbc$CSMF.accuracies[3]
+```
+
+InterVA.
+
+```{r}
+CSMF.accuracies.interva$CSMF.accuracies[2] - CSMF.accuracies.interva$CSMF.accuracies[3]
+```
+
+InSilicoVA.
+
+```{r}
+CSMF.accuracies.insilicova$CSMF.accuracies[2] - CSMF.accuracies.insilicova$CSMF.accuracies[3]
+```
+
+Tariff.
+
+```{r}
+CSMF.accuracies.tariff$CSMF.accuracies[2] - CSMF.accuracies.tariff$CSMF.accuracies[3]
+```
+
+Wrap it all up so that we can look at both the CSMFs and the difference between the two.
+
+```{r}
+# NBC
+nbc.test <- c(CSMF.accuracies.nbc$CSMF.accuracies[2:3],
+              CSMF.accuracies.nbc$CSMF.accuracies[2] - 
+                CSMF.accuracies.nbc$CSMF.accuracies[3])
+names(nbc.test) <- c(names(nbc.test)[1:2],"difference")
+# InterVA
+interva.test <- c(CSMF.accuracies.interva$CSMF.accuracies[2:3],
+                  CSMF.accuracies.interva$CSMF.accuracies[2] - 
+                    CSMF.accuracies.interva$CSMF.accuracies[3])
+names(interva.test) <- c(names(interva.test)[1:2],"difference")
+# InSilicoVA
+insilicova.test <- c(CSMF.accuracies.insilicova$CSMF.accuracies[2:3],
+                     CSMF.accuracies.insilicova$CSMF.accuracies[2] - 
+                       CSMF.accuracies.insilicova$CSMF.accuracies[3])
+names(insilicova.test) <- c(names(insilicova.test)[1:2],"difference")
+# Tariff
+tariff.test <- c(CSMF.accuracies.tariff$CSMF.accuracies[2:3],
+                 CSMF.accuracies.tariff$CSMF.accuracies[2] - 
+                   CSMF.accuracies.tariff$CSMF.accuracies[3])
+names(tariff.test) <- c(names(tariff.test)[1:2],"difference")
+```
+
+Display the results.
+
+NBC.
+
+```{r}
+nbc.test
+```
+
+InterVA.
+
+```{r}
+interva.test
+```
+
+InSilicoVA.
+
+```{r}
+insilicova.test
+```
+
+Tariff.
+
+```{r}
+tariff.test
+```
+
+
+
+
