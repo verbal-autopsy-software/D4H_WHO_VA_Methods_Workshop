@@ -1,0 +1,138 @@
+---
+title: "VA Data Quality Review Protocol / Report"
+author: Team Members
+date: "November 13, 2018"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!--
+This is a R Markdown comment:
+You can use this notation to comment-out text. FOr example if you wnat this to be a pure protocol (i.e. just the protocol steps), you can comment-out the sections titles "Findings" below and they will not appear in your output document.
+-->
+
+## Group Work and ToT Follow-up
+
+> Over the last one and a half week in the "VA Data Quality Reveiw and COD Assignment" Training of Trainers (5-16 November, 2018, Colombus, Ohio, USA) you have learned about the importance of VA raw data reveiw, how to examine and reveiw VA raw data using R, how the VA COD assignment algorithms work, how to run the VA COD algorithms, and how to interpret the outcome of the VA algorithm.
+As Master Trainers for VA data quality review and COD assignment, you are now equiped to train others on these topics and you can apply the methods learned to the VA data collected in your country on a routine basis. For that application of VA data quality reveiw steps (both pre- and post-algorithm), we ask you to develop a local protocol for routine application in your country and to work with local stakholders to apply that protocol to your VA data on a routine (time interval will depend on the rate of VA data collection in your setting) basis.
+To prepare you for the task of training others and the development of your local VA data quality reveiw protocol, we have designed  this group expercise. You have been assigned to a group, to work togther on the GroupWork.csv data set to aply the methods learned in Ohio and write a mock VA data quality reveiw (pre- and post-algorithm) protocol and report (see ***Findings*** boxes below). In the course of the group exercise you will work together and teach each other to furthe solidify the learnings from the Training of Trainers and you will develop the mock VA Data Quality Reveiw Protocol / Report which you can use as a templet for the protocol you will develop for application in your country.
+We suggest you structure the VA Data Quality Reveiw Protocol / Report into sections called VA Raw Data Examination and Cleaning, COD Assignment, and VA COD Examination. Please clearly number the steps of the protocol and comment all R code to allow for future use.
+
+## VA Raw Data Examination and Cleaning
+
+### Step 1: Importing VA Data
+Import the GroupWork.csv data set as a data frame called GWdata.
+```{r data_import}
+GWdata<-read.csv("filepath goes here", header=TRUE,stringsAsFactors=FALSE)
+```
+
+### Step 2: Examining and Reviewing each Variable
+```{r newVariables, include=FALSE}
+## This block will not be included in the VA Data Quality Reveiw Protocol as echo=FALSE. You can use this block for R commands and data manipulations which you dont wnat to show in the Protocol but which you need to do in the "background".
+names(GWdata)
+str(GWdata)
+GWdata$AIRSTEA4_new<-GWdata$AIRSTEA4
+GWdata$VILLAGA5_new<-GWdata$VILLAGA5
+```
+
+#### Variable: id005 (This is the variable for age.)
+```{r id005_examine}
+table(GWdata$AIRSTEA4_new, useNA="alway")
+```
+***Finding / Interpretation:***
+The table shows that there are issues with the coding of id005 and we need to recode all health areas coded to "0N", "0Y", "2T", etc. to NA:
+```{r id005_cleaning}
+GWdata$AIRSTEA4_new[which(GWdata$AIRSTEA4_new=="0N"
+                        | GWdata$AIRSTEA4_new=="0Y"
+                        | GWdata$AIRSTEA4_new=="2T"
+                        )]<-NA # This will replace all wrong Health Areas codes with NA.
+table(GWdata$AIRSTEA4_new, useNA="always") #Showing the now cleaned id005 variable.
+```
+
+#### Variable: id006 (This is the variable for fever.)
+```{r id006_examine}
+table(GWdata$AIRSTEA4_new, useNA="alway")
+```
+***Finding / Interpretation:***
+The table shows that there are issues with the coding of id005 and we need to recode all health areas coded to "0N", "0Y", "2T", etc. to NA:
+```{r id006_cleaning}
+GWdata$AIRSTEA4_new[which(GWdata$AIRSTEA4_new=="0N"
+                        | GWdata$AIRSTEA4_new=="0Y"
+                        | GWdata$AIRSTEA4_new=="2T"
+                        )]<-NA # This will replace all wrong Health Areas codes with NA.
+table(GWdata$AIRSTEA4_new, useNA="always") #Showing the now cleaned id005 variable.
+```
+
+## Running the VA Algorithm(s)
+In the above steps the VA raw data was examined and cleaned and we now have a clean VA data set to run in the algorithm(s).
+*For countries using SmartVA Analyze, export the cleaned dataset to a csv using the following code (SmartVA-Analyze will not wor with the GWdata; i.e. this part if only applicable for the countries uisng SmartVA-Analzye when using their own data to generate this Protocol / Report), run the algorithm and re-import the individual level output of SmartVA-Analyze (see file: cause-of-death) into R using the below code to then merge the input and output file to perform the VA COD Examination steps (see below).*
+```{r exportRunImportSmart, include=FALSE}
+#If you are suing SmartVA-Analzye, set include=TRUE and uncomment the below commnads.
+#write.csv("FileLocation")
+#Run the just exported CSV file in SmartVA-Analyze.
+#Import the "cause-of-death.csv" file back into R.
+#CODSmartVA<-read.csv("/cause-of-death.csv",header=TRUE,stringsAsFactors=FALSE)
+```
+
+### Step 3: Running IntervA5
+Using the clean data set, we can now run the algorithm(s).
+```{r InterVArun}
+#openVA()
+```
+
+### Step 4: Running InSiliCoVA
+```{r InSilicoVArun}
+#openVA()
+```
+
+## VA COD Examination
+### Step 5: Merging Algorithm input and output data
+```{r InOutputMerge}
+GWdata$CODInter<-1
+GWdata$CODInSilico<-2
+#GWdata$CODSmartVA<-CODSmartVA #This is only applicable is you used SMartVA-Analyze (outside of R) to get the COD.
+```
+
+### Step 6: Examining the merged and COD versus symptoms
+#### Checking for unexpected CODs
+##### Male versus Female causes
+```{r maleFemaleCOD}
+#Male with female causes using IntervA
+table(GWdata$CODInter)
+```
+
+
+
+
+#### Plotting InterVA
+Plotting the CSMF from InterVA.
+```{r InterVAexamine}
+#plot()
+```
+
+***Finding / Interpretation:***
+Plotting the CSMF from InterVA.
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
