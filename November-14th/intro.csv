@@ -1,0 +1,892 @@
+datetime,name,sex,age
+1/1/11 6:00,"Braund, Mr. Owen Harris",male,22
+1/10/11 1:00,"Cumings, Mrs. John Bradley (Florence Briggs Thayer)",female,38
+2/2/11 2:00,"Heikkinen, Miss. Laina",female,26
+3/2/11 4:00,"Futrelle, Mrs. Jacques Heath (Lily May Peel)",female,35
+3/4/11 4:00,"Allen, Mr. William Henry",male,35
+3/7/11 4:00,"Moran, Mr. James",male,
+3/8/11 2:00,"McCarthy, Mr. Timothy J",male,54
+3/10/11 0:00,"Palsson, Master. Gosta Leonard",male,2
+4/3/11 4:00,"Johnson, Mrs. Oscar W (Elisabeth Vilhelmina Berg)",female,27
+4/4/11 3:00,"Nasser, Mrs. Nicholas (Adele Achem)",female,14
+8/8/11 3:00,"Sandstrom, Miss. Marguerite Rut",female,4
+9/6/11 3:00,"Bonnell, Miss. Elizabeth",female,58
+9/12/11 2:00,"Saundercock, Mr. William Henry",male,20
+9/13/11 2:00,"Andersson, Mr. Anders Johan",male,39
+9/18/11 4:00,"Vestrom, Miss. Hulda Amanda Adolfina",female,14
+1/1/11 4:00,"Hewlett, Mrs. (Mary D Kingcome) ",female,55
+1/1/11 5:00,"Rice, Master. Eugene",male,2
+1/2/11 4:00,"Williams, Mr. Charles Eugene",male,
+1/2/11 7:00,"Vander Planke, Mrs. Julius (Emelia Maria Vandemoortele)",female,31
+1/3/11 4:00,"Masselmani, Mrs. Fatima",female,
+1/4/11 2:00,"Fynney, Mr. Joseph J",male,35
+1/6/11 4:00,"Beesley, Mr. Lawrence",male,34
+1/7/11 2:00,"McGowan, Miss. Anna ""Annie""",female,15
+1/7/11 4:00,"Sloper, Mr. William Thompson",male,28
+1/8/11 4:00,"Palsson, Miss. Torborg Danira",female,8
+1/9/11 4:00,"Asplund, Mrs. Carl Oscar (Selma Augusta Emilia Johansson)",female,38
+1/9/11 5:00,"Emir, Mr. Farred Chehab",male,
+1/9/11 6:00,"Fortune, Mr. Charles Alexander",male,19
+1/10/11 3:00,"O'Dwyer, Miss. Ellen ""Nellie""",female,
+1/12/11 2:00,"Todoroff, Mr. Lalio",male,
+1/14/11 2:00,"Uruchurtu, Don. Manuel E",male,40
+1/14/11 3:00,"Spencer, Mrs. William Augustus (Marie Eugenie)",female,
+1/15/11 5:00,"Glynn, Miss. Mary Agatha",female,
+1/16/11 4:00,"Wheadon, Mr. Edward H",male,66
+1/16/11 5:00,"Meyer, Mr. Edgar Joseph",male,28
+1/16/11 6:00,"Holverson, Mr. Alexander Oskar",male,42
+1/17/11 5:00,"Mamee, Mr. Hanna",male,
+1/19/11 4:00,"Cann, Mr. Ernest Charles",male,21
+2/2/11 3:00,"Vander Planke, Miss. Augusta Maria",female,18
+2/2/11 4:00,"Nicola-Yarred, Miss. Jamila",female,14
+2/3/11 3:00,"Ahlin, Mrs. Johan (Johanna Persdotter Larsson)",female,40
+2/4/11 2:00,"Turpin, Mrs. William John Robert (Dorothy Ann Wonnacott)",female,27
+2/4/11 3:00,"Kraeff, Mr. Theodor",male,
+2/6/11 5:00,"Laroche, Miss. Simonne Marie Anne Andree",female,3
+2/6/11 6:00,"Devaney, Miss. Margaret Delia",female,19
+2/7/11 3:00,"Rogers, Mr. William John",male,
+2/7/11 4:00,"Lennon, Mr. Denis",male,
+2/8/11 2:00,"O'Driscoll, Miss. Bridget",female,
+2/8/11 3:00,"Samaan, Mr. Youssef",male,
+2/10/11 4:00,"Arnold-Franchi, Mrs. Josef (Josefine Franchi)",female,18
+2/12/11 5:00,"Panula, Master. Juha Niilo",male,7
+2/12/11 6:00,"Nosworthy, Mr. Richard Cater",male,21
+2/14/11 3:00,"Harper, Mrs. Henry Sleeper (Myna Haxtun)",female,49
+2/15/11 4:00,"Faunthorpe, Mrs. Lizzie (Elizabeth Anne Wilkinson)",female,29
+2/16/11 3:00,"Ostby, Mr. Engelhart Cornelius",male,65
+2/16/11 4:00,"Woolner, Mr. Hugh",male,
+2/17/11 3:00,"Rugg, Miss. Emily",female,21
+2/17/11 4:00,"Novel, Mr. Mansouer",male,28.5
+2/18/11 4:00,"West, Miss. Constance Mirium",female,5
+3/1/11 4:00,"Goodwin, Master. William Frederick",male,11
+3/1/11 5:00,"Sirayanian, Mr. Orsen",male,22
+3/2/11 3:00,"Icard, Miss. Amelie",female,38
+3/3/11 1:00,"Harris, Mr. Henry Birkhardt",male,45
+3/3/11 3:00,"Skoog, Master. Harald",male,4
+3/3/11 4:00,"Stewart, Mr. Albert A",male,
+3/4/11 3:00,"Moubarek, Master. Gerios",male,
+3/5/11 4:00,"Nye, Mrs. (Elizabeth Ramell)",female,29
+3/6/11 6:00,"Crease, Mr. Ernest James",male,19
+3/7/11 3:00,"Andersson, Miss. Erna Alexandra",female,17
+3/7/11 5:00,"Kink, Mr. Vincenz",male,26
+3/9/11 2:00,"Jenkin, Mr. Stephen Curnow",male,32
+3/10/11 2:00,"Goodwin, Miss. Lillian Amy",female,16
+3/12/11 4:00,"Hood, Mr. Ambrose Jr",male,21
+3/14/11 1:00,"Chronopoulos, Mr. Apostolos",male,26
+3/14/11 2:00,"Bing, Mr. Lee",male,32
+3/15/11 4:00,"Moen, Mr. Sigurd Hansen",male,25
+3/16/11 4:00,"Staneff, Mr. Ivan",male,
+3/17/11 3:00,"Moutal, Mr. Rahamin Haim",male,
+4/4/11 2:00,"Caldwell, Master. Alden Gates",male,0.83
+4/4/11 4:00,"Dowdell, Miss. Elizabeth",female,30
+4/6/11 4:00,"Waelens, Mr. Achille",male,22
+4/7/11 4:00,"Sheerlinck, Mr. Jan Baptist",male,29
+4/8/11 3:00,"McDermott, Miss. Brigdet Delia",female,
+4/8/11 4:00,"Carrau, Mr. Francisco M",male,28
+4/11/11 4:00,"Ilett, Miss. Bertha",female,17
+4/12/11 3:00,"Backstrom, Mrs. Karl Alfred (Maria Mathilda Gustafsson)",female,33
+4/13/11 1:00,"Ford, Mr. William Neal",male,16
+4/17/11 5:00,"Slocovski, Mr. Selman Francis",male,
+4/18/11 3:00,"Fortune, Miss. Mabel Helen",female,23
+5/3/11 4:00,"Celotti, Mr. Francesco",male,24
+5/4/11 3:00,"Christmann, Mr. Emil",male,29
+5/6/11 4:00,"Andreasson, Mr. Paul Edvin",male,20
+6/7/11 3:00,"Chaffee, Mr. Herbert Fuller",male,46
+6/8/11 3:00,"Dean, Mr. Bertram Frank",male,26
+6/14/11 3:00,"Coxon, Mr. Daniel",male,59
+6/15/11 3:00,"Shorney, Mr. Charles Joseph",male,
+7/3/11 5:00,"Goldschmidt, Mr. George B",male,71
+7/19/11 3:00,"Greenfield, Mr. William Bertram",male,23
+8/19/11 3:00,"Doling, Mrs. John T (Ada Julia Bone)",female,34
+9/7/11 3:00,"Kantor, Mr. Sinai",male,34
+9/9/11 3:00,"Petranec, Miss. Matilda",female,28
+10/11/11 3:00,"Petroff, Mr. Pastcho (""Pentcho"")",male,
+10/18/11 3:00,"White, Mr. Richard Frasar",male,21
+11/8/11 2:00,"Johansson, Mr. Gustaf Joel",male,33
+12/1/11 4:00,"Gustafsson, Mr. Anders Vilhelm",male,37
+12/2/11 3:00,"Mionoff, Mr. Stoytcho",male,28
+12/7/11 4:00,"Salkjelsvik, Miss. Anna Kristine",female,21
+12/8/11 3:00,"Moss, Mr. Albert Johan",male,
+12/9/11 4:00,"Rekic, Mr. Tido",male,38
+12/13/11 2:00,"Moran, Miss. Bertha",female,
+12/18/11 4:00,"Porter, Mr. Walter Chamberlain",male,47
+1/1/12 6:00,"Zabour, Miss. Hileni",female,14.5
+1/4/12 2:00,"Barton, Mr. David John",male,22
+1/4/12 3:00,"Jussila, Miss. Katriina",female,20
+1/12/12 2:00,"Attalah, Miss. Malake",female,17
+1/18/12 2:00,"Pekoniemi, Mr. Edvard",male,21
+1/18/12 4:00,"Connors, Mr. Patrick",male,70.5
+1/19/12 4:00,"Turpin, Mr. William John Robert",male,29
+2/1/12 4:00,"Baxter, Mr. Quigg Edmond",male,24
+2/2/12 4:00,"Andersson, Miss. Ellis Anna Maria",female,2
+2/7/12 3:00,"Hickman, Mr. Stanley George",male,21
+2/8/12 2:00,"Moore, Mr. Leonard Charles",male,
+2/8/12 3:00,"Nasser, Mr. Nicholas",male,32.5
+2/8/12 4:00,"Webber, Miss. Susan",female,32.5
+2/9/12 4:00,"White, Mr. Percival Wayland",male,54
+2/12/12 4:00,"Nicola-Yarred, Master. Elias",male,12
+2/13/12 3:00,"McMahon, Mr. Martin",male,
+2/15/12 4:00,"Madsen, Mr. Fridtjof Arne",male,24
+2/16/12 3:00,"Peter, Miss. Anna",female,
+2/17/12 3:00,"Ekstrom, Mr. Johan",male,45
+2/17/12 4:00,"Drazenoic, Mr. Jozef",male,33
+2/18/12 5:00,"Coelho, Mr. Domingos Fernandeo",male,20
+2/19/12 5:00,"Robins, Mrs. Alexander A (Grace Charity Laury)",female,47
+3/3/12 5:00,"Weisz, Mrs. Leopold (Mathilde Francoise Pede)",female,29
+3/5/12 3:00,"Sobey, Mr. Samuel James Hayden",male,25
+3/5/12 4:00,"Richard, Mr. Emile",male,23
+3/6/12 3:00,"Newsom, Miss. Helen Monypeny",female,19
+3/9/12 4:00,"Futrelle, Mr. Jacques Heath",male,37
+3/13/12 2:00,"Osen, Mr. Olaf Elon",male,16
+3/13/12 4:00,"Giglio, Mr. Victor",male,24
+4/3/12 4:00,"Boulos, Mrs. Joseph (Sultana)",female,
+4/4/12 4:00,"Nysten, Miss. Anna Sofia",female,22
+4/5/12 4:00,"Hakkarainen, Mrs. Pekka Pietari (Elin Matilda Dolck)",female,24
+4/12/12 4:00,"Burke, Mr. Jeremiah",male,19
+5/9/12 2:00,"Andrew, Mr. Edgardo Samuel",male,18
+5/14/12 2:00,"Nicholls, Mr. Joseph Charles",male,19
+7/9/12 4:00,"Andersson, Mr. August Edvard (""Wennerstrom"")",male,27
+10/16/12 2:00,"Ford, Miss. Robina Maggie ""Ruby""",female,9
+11/14/12 2:00,"Navratil, Mr. Michel (""Louis M Hoffman"")",male,36.5
+12/11/12 2:00,"Byles, Rev. Thomas Roussel Davids",male,42
+1/1/11 7:00,"Bateman, Rev. Robert James",male,51
+1/2/11 6:00,"Pears, Mrs. Thomas (Edith Wearne)",female,22
+1/3/11 1:00,"Meo, Mr. Alfonzo",male,55.5
+1/4/11 1:00,"van Billiard, Mr. Austin Blyler",male,40.5
+1/4/11 4:00,"Olsen, Mr. Ole Martin",male,
+1/5/11 2:00,"Williams, Mr. Charles Duane",male,51
+1/5/11 4:00,"Gilnagh, Miss. Katherine ""Katie""",female,16
+1/6/11 2:00,"Corn, Mr. Harry",male,30
+1/8/11 6:00,"Smiljanic, Mr. Mile",male,
+1/10/11 4:00,"Sage, Master. Thomas Henry",male,
+1/13/11 1:00,"Cribb, Mr. John Hatfield",male,44
+1/13/11 2:00,"Watt, Mrs. James (Elizabeth ""Bessie"" Inglis Milne)",female,40
+1/15/11 6:00,"Bengtsson, Mr. John Viktor",male,26
+1/17/11 3:00,"Calic, Mr. Jovo",male,17
+1/17/11 4:00,"Panula, Master. Eino Viljami",male,1
+2/1/11 2:00,"Goldsmith, Master. Frank John William ""Frankie""",male,9
+2/1/11 3:00,"Chibnall, Mrs. (Edith Martha Bowerman)",female,
+2/2/11 0:00,"Skoog, Mrs. William (Anna Bernhardina Karlsson)",female,45
+2/3/11 2:00,"Baumann, Mr. John D",male,
+2/3/11 5:00,"Ling, Mr. Lee",male,28
+2/6/11 4:00,"Van der hoef, Mr. Wyckoff",male,61
+2/8/11 5:00,"Rice, Master. Arthur",male,4
+2/9/11 2:00,"Johnson, Miss. Eleanor Ileen",female,1
+2/9/11 3:00,"Sivola, Mr. Antti Wilhelm",male,21
+2/13/11 4:00,"Smith, Mr. James Clinch",male,56
+2/14/11 2:00,"Klasen, Mr. Klas Albin",male,18
+2/14/11 4:00,"Lefebre, Master. Henry Forbes",male,
+2/15/11 2:00,"Isham, Miss. Ann Elizabeth",female,50
+3/1/11 3:00,"Hale, Mr. Reginald",male,30
+3/2/11 2:00,"Leonard, Mr. Lionel",male,36
+3/3/11 2:00,"Sage, Miss. Constance Gladys",female,
+3/4/11 2:00,"Pernot, Mr. Rene",male,
+3/5/11 3:00,"Asplund, Master. Clarence Gustaf Hugo",male,9
+3/7/11 1:00,"Becker, Master. Richard F",male,1
+3/8/11 3:00,"Kink-Heilmann, Miss. Luise Gretchen",female,4
+3/8/11 4:00,"Rood, Mr. Hugh Roscoe",male,
+3/9/11 3:00,"O'Brien, Mrs. Thomas (Johanna ""Hannah"" Godfrey)",female,
+3/9/11 4:00,"Romaine, Mr. Charles Hallace (""Mr C Rolmane"")",male,45
+3/10/11 1:00,"Bourke, Mr. John",male,40
+3/10/11 5:00,"Turcin, Mr. Stjepan",male,36
+3/11/11 3:00,"Pinsky, Mrs. (Rosa)",female,32
+3/12/11 5:00,"Carbines, Mr. William",male,19
+3/12/11 6:00,"Andersen-Jensen, Miss. Carla Christine Nielsine",female,19
+3/13/11 6:00,"Navratil, Master. Michel M",male,3
+3/15/11 2:00,"Brown, Mrs. James Joseph (Margaret Tobin)",female,44
+3/16/11 1:00,"Lurette, Miss. Elise",female,58
+3/16/11 3:00,"Mernagh, Mr. Robert",male,
+3/19/11 4:00,"Olsen, Mr. Karl Siegwart Andreas",male,42
+3/19/11 5:00,"Madigan, Miss. Margaret ""Maggie""",female,
+4/5/11 4:00,"Yrois, Miss. Henriette (""Mrs Harbeck"")",female,24
+4/6/11 1:00,"Vande Walle, Mr. Nestor Cyriel",male,28
+4/10/11 4:00,"Sage, Mr. Frederick",male,
+4/11/11 2:00,"Johanson, Mr. Jakob Alfred",male,34
+4/12/11 4:00,"Youseff, Mr. Gerious",male,45.5
+4/13/11 2:00,"Cohen, Mr. Gurshon ""Gus""",male,18
+4/13/11 3:00,"Strom, Miss. Telma Matilda",female,2
+4/13/11 4:00,"Backstrom, Mr. Karl Alfred",male,32
+4/14/11 3:00,"Albimona, Mr. Nassef Cassem",male,26
+4/18/11 2:00,"Carr, Miss. Helen ""Ellen""",female,16
+4/19/11 1:00,"Blank, Mr. Henry",male,40
+5/3/11 3:00,"Ali, Mr. Ahmed",male,24
+5/4/11 4:00,"Cameron, Miss. Clear Annie",female,35
+5/9/11 2:00,"Perkin, Mr. John Henry",male,22
+5/10/11 4:00,"Givard, Mr. Hans Kristensen",male,30
+5/11/11 4:00,"Kiernan, Mr. Philip",male,
+5/13/11 3:00,"Newell, Miss. Madeleine",female,31
+5/17/11 4:00,"Honkanen, Miss. Eliina",female,27
+5/18/11 4:00,"Jacobsohn, Mr. Sidney Samuel",male,42
+6/7/11 1:00,"Bazzani, Miss. Albina",female,32
+6/7/11 2:00,"Harris, Mr. Walter",male,30
+6/9/11 3:00,"Sunderland, Mr. Victor Francis",male,16
+7/3/11 4:00,"Bracken, Mr. James H",male,27
+7/7/11 3:00,"Green, Mr. George Henry",male,51
+8/1/11 4:00,"Nenkoff, Mr. Christo",male,
+8/14/11 4:00,"Hoyt, Mr. Frederick Maxfield",male,38
+9/2/11 4:00,"Berglund, Mr. Karl Ivar Sven",male,22
+9/6/11 2:00,"Mellors, Mr. William John",male,19
+9/8/11 3:00,"Lovell, Mr. John Hall (""Henry"")",male,20.5
+9/13/11 3:00,"Fahlstrom, Mr. Arne Jonas",male,18
+10/4/11 2:00,"Lefebre, Miss. Mathilde",female,
+10/5/11 2:00,"Harris, Mrs. Henry Birkhardt (Irene Wallach)",female,35
+10/12/11 2:00,"Larsson, Mr. Bengt Edvin",male,29
+10/12/11 3:00,"Sjostedt, Mr. Ernst Adolf",male,59
+10/17/11 3:00,"Asplund, Miss. Lillian Gertrud",female,5
+11/2/11 2:00,"Leyson, Mr. Robert William Norman",male,24
+11/2/11 3:00,"Harknett, Miss. Alice Phoebe",female,
+11/5/11 5:00,"Hold, Mr. Stephen",male,44
+11/7/11 2:00,"Collyer, Miss. Marjorie ""Lottie""",female,8
+11/10/11 4:00,"Pengelly, Mr. Frederick William",male,19
+11/18/11 3:00,"Hunt, Mr. George Henry",male,33
+11/19/11 5:00,"Zabour, Miss. Thamine",female,
+12/4/11 5:00,"Murphy, Miss. Katherine ""Kate""",female,
+12/5/11 3:00,"Coleridge, Mr. Reginald Charles",male,29
+12/8/11 4:00,"Maenpaa, Mr. Matti Alexanteri",male,22
+12/12/11 3:00,"Attalah, Mr. Sleiman",male,30
+12/14/11 2:00,"Minahan, Dr. William Edward",male,44
+12/15/11 3:00,"Lindahl, Miss. Agda Thorilda Viktoria",female,25
+1/3/12 3:00,"Hamalainen, Mrs. William (Anna)",female,24
+1/4/12 4:00,"Beckwith, Mr. Richard Leonard",male,37
+1/8/12 5:00,"Carter, Rev. Ernest Courtenay",male,54
+1/8/12 6:00,"Reed, Mr. James George",male,
+1/10/12 2:00,"Strom, Mrs. Wilhelm (Elna Matilda Persson)",female,29
+1/11/12 4:00,"Stead, Mr. William Thomas",male,62
+1/12/12 4:00,"Lobb, Mr. William Arthur",male,30
+1/13/12 4:00,"Rosblom, Mrs. Viktor (Helena Wilhelmina)",female,41
+1/17/12 1:00,"Touma, Mrs. Darwis (Hanne Youssef Razi)",female,29
+1/17/12 4:00,"Thorne, Mrs. Gertrude Maybelle",female,
+2/2/12 3:00,"Cherry, Miss. Gladys",female,30
+2/3/12 4:00,"Ward, Miss. Anna",female,35
+2/6/12 4:00,"Parrish, Mrs. (Lutie Davis)",female,50
+2/9/12 2:00,"Smith, Mr. Thomas",male,
+2/10/12 4:00,"Asplund, Master. Edvin Rojj Felix",male,3
+2/11/12 5:00,"Taussig, Mr. Emil",male,52
+2/12/12 6:00,"Harrison, Mr. William",male,40
+2/13/12 4:00,"Henry, Miss. Delia",female,
+2/14/12 4:00,"Reeves, Mr. David",male,36
+3/2/12 4:00,"Panula, Mr. Ernesti Arvid",male,16
+3/3/12 4:00,"Persson, Mr. Ernst Ulrik",male,25
+3/7/12 3:00,"Graham, Mrs. William Thompson (Edith Junkins)",female,58
+3/8/12 4:00,"Bissette, Miss. Amelia",female,35
+3/12/12 3:00,"Cairns, Mr. Alexander",male,
+3/13/12 3:00,"Tornquist, Mr. William Henry",male,25
+3/14/12 2:00,"Mellinger, Mrs. (Elizabeth Anne Maidment)",female,41
+3/17/12 4:00,"Natsch, Mr. Charles H",male,37
+3/19/12 3:00,"Healy, Miss. Hanora ""Nora""",female,
+4/2/12 4:00,"Andrews, Miss. Kornelia Theodosia",female,63
+4/7/12 5:00,"Lindblom, Miss. Augusta Charlotta",female,45
+4/10/12 2:00,"Parkes, Mr. Francis ""Frank""",male,
+4/10/12 3:00,"Rice, Master. Eric",male,7
+4/10/12 4:00,"Abbott, Mrs. Stanton (Rosa Hunt)",female,35
+4/11/12 2:00,"Duane, Mr. Frank",male,65
+4/11/12 3:00,"Olsson, Mr. Nils Johan Goransson",male,28
+5/1/12 3:00,"de Pelsmaeker, Mr. Alfons",male,16
+5/2/12 4:00,"Dorking, Mr. Edward Arthur",male,19
+5/3/12 4:00,"Smith, Mr. Richard William",male,
+5/7/12 4:00,"Stankovic, Mr. Ivan",male,33
+5/9/12 3:00,"de Mulder, Mr. Theodore",male,30
+5/10/12 4:00,"Naidenoff, Mr. Penko",male,22
+5/14/12 3:00,"Hosono, Mr. Masabumi",male,42
+7/3/12 3:00,"Connolly, Miss. Kate",female,22
+7/18/12 3:00,"Barber, Miss. Ellen ""Nellie""",female,26
+10/2/12 2:00,"Bishop, Mrs. Dickinson H (Helen Walton)",female,19
+10/15/12 3:00,"Levy, Mr. Rene Jacques",male,36
+10/16/12 3:00,"Haas, Miss. Aloisia",female,24
+11/6/12 2:00,"Mineff, Mr. Ivan",male,24
+11/15/12 3:00,"Lewy, Mr. Ervin G",male,
+11/19/12 3:00,"Hanna, Mr. Mansour",male,23.5
+12/6/12 3:00,"Allison, Miss. Helen Loraine",female,2
+12/13/12 3:00,"Saalfeld, Mr. Adolphe",male,
+12/19/12 2:00,"Baxter, Mrs. James (Helene DeLaudeniere Chaput)",female,50
+1/3/11 5:00,"Kelly, Miss. Anna Katherine ""Annie Kate""",female,
+1/5/11 5:00,"McCoy, Mr. Bernard",male,
+1/10/11 0:00,"Johnson, Mr. William Cahoone Jr",male,19
+1/10/11 2:00,"Keane, Miss. Nora A",female,
+1/10/11 5:00,"Williams, Mr. Howard Hugh ""Harry""",male,
+1/11/11 1:00,"Allison, Master. Hudson Trevor",male,0.92
+1/11/11 2:00,"Fleming, Miss. Margaret",female,
+1/13/11 3:00,"Penasco y Castellana, Mrs. Victor de Satode (Maria Josefa Perez de Soto y Vallejo)",female,17
+1/13/11 5:00,"Abelson, Mr. Samuel",male,30
+1/16/11 7:00,"Francatelli, Miss. Laura Mabel",female,30
+1/17/11 23:00,"Hays, Miss. Margaret Bechstein",female,24
+1/18/11 12:00,"Ryerson, Miss. Emily Borie",female,18
+1/19/11 0:00,"Lahtinen, Mrs. William (Anna Sylfven)",female,26
+1/19/11 2:00,"Hendekovic, Mr. Ignjac",male,28
+2/1/11 1:00,"Hart, Mr. Benjamin",male,43
+2/1/11 5:00,"Nilsson, Miss. Helmina Josefina",female,26
+2/2/11 1:00,"Kantor, Mrs. Sinai (Miriam Sternin)",female,24
+2/2/11 5:00,"Moraweck, Dr. Ernest",male,54
+2/7/11 2:00,"Wick, Miss. Mary Natalie",female,31
+2/8/11 4:00,"Spedden, Mrs. Frederic Oakley (Margaretta Corning Stone)",female,40
+2/10/11 2:00,"Dennis, Mr. Samuel",male,22
+2/11/11 2:00,"Danoff, Mr. Yoto",male,27
+2/13/11 6:00,"Slayter, Miss. Hilda Mary",female,30
+2/13/11 7:00,"Caldwell, Mrs. Albert Francis (Sylvia Mae Harbaugh)",female,22
+2/14/11 5:00,"Sage, Mr. George John Jr",male,
+2/19/11 4:00,"Young, Miss. Marie Grice",female,36
+2/19/11 5:00,"Nysveen, Mr. Johan Hansen",male,61
+2/19/11 6:00,"Ball, Mrs. (Ada E Hall)",female,36
+3/1/11 1:00,"Goldsmith, Mrs. Frank John (Emily Alice Brown)",female,31
+3/5/11 5:00,"Hippach, Miss. Jean Gertrude",female,16
+3/5/11 6:00,"McCoy, Miss. Agnes",female,
+3/6/11 4:00,"Partner, Mr. Austen",male,45.5
+3/11/11 2:00,"Graham, Mr. George Edward",male,38
+3/13/11 5:00,"Vander Planke, Mr. Leo Edmondus",male,16
+3/14/11 3:00,"Frauenthal, Mrs. Henry William (Clara Heinsheimer)",female,
+3/16/11 5:00,"Denkoff, Mr. Mitto",male,
+3/17/11 4:00,"Pears, Mr. Thomas Clinton",male,29
+4/1/11 4:00,"Burns, Miss. Elizabeth Margaret",female,41
+4/5/11 3:00,"Dahl, Mr. Karl Edwart",male,45
+4/7/11 3:00,"Blackwell, Mr. Stephen Weart",male,45
+4/9/11 4:00,"Navratil, Master. Edmond Roger",male,2
+4/11/11 1:00,"Fortune, Miss. Alice Elizabeth",female,24
+4/14/11 2:00,"Collander, Mr. Erik Gustaf",male,28
+4/15/11 3:00,"Sedgwick, Mr. Charles Frederick Waddington",male,25
+4/15/11 4:00,"Fox, Mr. Stanley Hubert",male,36
+4/16/11 5:00,"Brown, Miss. Amelia ""Mildred""",female,24
+4/19/11 3:00,"Smith, Miss. Marion Elsie",female,40
+5/5/11 4:00,"Davison, Mrs. Thomas Henry (Mary E Finck)",female,
+5/7/11 5:00,"Coutts, Master. William Loch ""William""",male,3
+5/10/11 3:00,"Dimic, Mr. Jovan",male,42
+5/11/11 3:00,"Odahl, Mr. Nils Martin",male,23
+5/13/11 4:00,"Williams-Lambert, Mr. Fletcher Fellows",male,
+5/16/11 3:00,"Elias, Mr. Tannous",male,15
+5/17/11 3:00,"Arnold-Franchi, Mr. Josef",male,25
+5/18/11 3:00,"Yousif, Mr. Wazli",male,
+5/19/11 3:00,"Vanden Steen, Mr. Leo Peter",male,28
+5/19/11 4:00,"Bowerman, Miss. Elsie Edith",female,22
+6/1/11 2:00,"Funk, Miss. Annie Clemmer",female,38
+6/2/11 4:00,"McGovern, Miss. Mary",female,
+6/6/11 3:00,"Mockler, Miss. Helen Mary ""Ellie""",female,
+6/7/11 4:00,"Skoog, Mr. Wilhelm",male,40
+6/10/11 3:00,"del Carlo, Mr. Sebastiano",male,29
+6/13/11 4:00,"Barbara, Mrs. (Catherine David)",female,45
+6/14/11 4:00,"Asim, Mr. Adola",male,35
+7/3/11 6:00,"O'Brien, Mr. Thomas",male,
+7/4/11 5:00,"Adahl, Mr. Mauritz Nils Martin",male,30
+7/13/11 2:00,"Warren, Mrs. Frank Manley (Anna Sophia Atkinson)",female,60
+7/18/11 4:00,"Moussa, Mrs. (Mantoura Boulos)",female,
+8/4/11 3:00,"Jermyn, Miss. Annie",female,
+8/8/11 2:00,"Aubart, Mme. Leontine Pauline",female,24
+8/9/11 2:00,"Harder, Mr. George Achilles",male,25
+8/9/11 3:00,"Wiklund, Mr. Jakob Alfred",male,18
+8/10/11 3:00,"Beavan, Mr. William Thomas",male,19
+8/15/11 2:00,"Ringhini, Mr. Sante",male,22
+8/16/11 2:00,"Palsson, Miss. Stina Viola",female,3
+9/4/11 6:00,"Meyer, Mrs. Edgar Joseph (Leila Saks)",female,
+9/6/11 4:00,"Landergren, Miss. Aurora Adelia",female,22
+9/7/11 1:00,"Widener, Mr. Harry Elkins",male,27
+9/8/11 4:00,"Betros, Mr. Tannous",male,20
+9/9/11 4:00,"Gustafsson, Mr. Karl Gideon",male,19
+9/16/11 4:00,"Bidois, Miss. Rosalie",female,42
+9/17/11 5:00,"Nakid, Miss. Maria (""Mary"")",female,1
+10/2/11 4:00,"Tikkanen, Mr. Juho",male,32
+10/4/11 3:00,"Holverson, Mrs. Alexander Oskar (Mary Aline Towner)",female,35
+10/17/11 2:00,"Plotcharsky, Mr. Vasil",male,
+10/17/11 4:00,"Davies, Mr. Charles Henry",male,18
+10/19/11 4:00,"Goodwin, Master. Sidney Leonard",male,1
+10/19/11 5:00,"Buss, Miss. Kate",female,36
+11/1/11 2:00,"Sadlier, Mr. Matthew",male,
+11/3/11 4:00,"Lehmann, Miss. Bertha",female,17
+11/7/11 3:00,"Carter, Mr. William Ernest",male,36
+11/8/11 3:00,"Jansson, Mr. Carl Olof",male,21
+11/12/11 5:00,"Gustafsson, Mr. Johan Birger",male,28
+11/13/11 5:00,"Newell, Miss. Marjorie",female,23
+11/14/11 3:00,"Sandstrom, Mrs. Hjalmar (Agnes Charlotta Bengtsson)",female,24
+11/16/11 3:00,"Johansson, Mr. Erik",male,22
+11/16/11 4:00,"Olsson, Miss. Elina",female,31
+11/17/11 3:00,"McKane, Mr. Peter David",male,46
+11/17/11 4:00,"Pain, Dr. Alfred",male,23
+12/2/11 4:00,"Trout, Mrs. William H (Jessie L)",female,28
+12/4/11 6:00,"Niskanen, Mr. Juha",male,39
+12/6/11 2:00,"Adams, Mr. John",male,26
+12/6/11 3:00,"Jussila, Miss. Mari Aina",female,21
+12/7/11 3:00,"Hakkarainen, Mr. Pekka Pietari",male,28
+12/7/11 5:00,"Oreskovic, Miss. Marija",female,20
+12/10/11 4:00,"Gale, Mr. Shadrach",male,34
+12/12/11 4:00,"Widegren, Mr. Carl/Charles Peter",male,51
+12/13/11 3:00,"Richards, Master. William Rowe",male,3
+12/14/11 3:00,"Birkeland, Mr. Hans Martin Monsen",male,21
+12/16/11 3:00,"Lefebre, Miss. Ida",female,
+12/18/11 6:00,"Sdycoff, Mr. Todor",male,
+12/19/11 2:00,"Hart, Mr. Henry",male,
+12/19/11 3:00,"Minahan, Miss. Daisy E",female,33
+1/2/12 5:00,"Cunningham, Mr. Alfred Fleming",male,
+1/3/12 2:00,"Sundman, Mr. Johan Julian",male,44
+1/4/12 1:00,"Meek, Mrs. Thomas (Annie Louise Rowley)",female,
+1/6/12 2:00,"Drew, Mrs. James Vivian (Lulu Thorne Christian)",female,34
+1/6/12 3:00,"Silven, Miss. Lyyli Karoliina",female,18
+1/6/12 4:00,"Matthews, Mr. William John",male,30
+1/9/12 2:00,"Van Impe, Miss. Catharina",female,10
+1/9/12 3:00,"Gheorgheff, Mr. Stanio",male,
+1/10/12 1:00,"Charters, Mr. David",male,21
+1/12/12 0:00,"Zimmerman, Mr. Leo",male,29
+1/12/12 1:00,"Danbom, Mrs. Ernst Gilbert (Anna Sigrid Maria Brogren)",female,28
+1/12/12 3:00,"Rosblom, Mr. Viktor Richard",male,18
+1/14/12 4:00,"Wiseman, Mr. Phillippe",male,
+1/16/12 3:00,"Clarke, Mrs. Charles V (Ada Maria Winfield)",female,28
+1/18/12 3:00,"Phillips, Miss. Kate Florence (""Mrs Kate Louise Phillips Marshall"")",female,19
+1/19/12 2:00,"Flynn, Mr. James",male,
+2/1/12 3:00,"Pickard, Mr. Berk (Berk Trembisky)",male,32
+2/4/12 5:00,"Bjornstrom-Steffansson, Mr. Mauritz Hakan",male,28
+2/6/12 2:00,"Thorneycroft, Mrs. Percival (Florence Kate White)",female,
+2/7/12 4:00,"Louch, Mrs. Charles Alexander (Alice Adelaide Slow)",female,42
+2/12/12 5:00,"Kallio, Mr. Nikolai Erland",male,17
+2/14/12 2:00,"Silvey, Mr. William Baird",male,50
+2/14/12 3:00,"Carter, Miss. Lucile Polk",female,14
+2/15/12 3:00,"Ford, Miss. Doolina Margaret ""Daisy""",female,21
+2/16/12 4:00,"Richards, Mrs. Sidney (Emily Hocking)",female,24
+2/19/12 4:00,"Fortune, Mr. Mark",male,64
+3/1/12 3:00,"Kvillner, Mr. Johan Henrik Johannesson",male,31
+3/2/12 3:00,"Hart, Mrs. Benjamin (Esther Ada Bloomfield)",female,45
+3/5/12 1:00,"Hampe, Mr. Leon",male,20
+3/5/12 2:00,"Petterson, Mr. Johan Emil",male,25
+3/6/12 4:00,"Reynaldo, Ms. Encarnacion",female,28
+3/7/12 4:00,"Johannesen-Bratthammer, Mr. Bernt",male,
+3/8/12 3:00,"Dodge, Master. Washington",male,4
+3/10/12 4:00,"Mellinger, Miss. Madeleine Violet",female,13
+3/12/12 4:00,"Seward, Mr. Frederic Kimber",male,34
+3/14/12 3:00,"Baclini, Miss. Marie Catherine",female,5
+3/15/12 4:00,"Peuchen, Major. Arthur Godfrey",male,52
+3/16/12 3:00,"West, Mr. Edwy Arthur",male,36
+3/16/12 4:00,"Hagland, Mr. Ingvald Olai Olsen",male,
+3/17/12 5:00,"Foreman, Mr. Benjamin Laventall",male,30
+3/19/12 4:00,"Goldenberg, Mr. Samuel L",male,49
+4/2/12 2:00,"Peduzzi, Mr. Joseph",male,
+4/3/12 3:00,"Jalsevac, Mr. Ivan",male,29
+4/4/12 3:00,"Millet, Mr. Francis Davis",male,65
+4/6/12 4:00,"Kenyon, Mrs. Frederick R (Marion)",female,
+4/9/12 3:00,"Toomey, Miss. Ellen",female,50
+4/9/12 4:00,"O'Connor, Mr. Maurice",male,
+4/12/12 3:00,"Anderson, Mr. Harry",male,48
+4/17/12 2:00,"Morley, Mr. William",male,34
+4/19/12 3:00,"Gee, Mr. Arthur H",male,47
+5/7/12 3:00,"Milling, Mr. Jacob Christian",male,48
+5/8/12 1:00,"Maisner, Mr. Simon",male,
+5/10/12 2:00,"Goncalves, Mr. Manuel Estanslas",male,38
+5/10/12 3:00,"Campbell, Mr. William",male,
+5/14/12 4:00,"Smart, Mr. John Montgomery",male,56
+5/15/12 2:00,"Scanlan, Mr. James",male,
+5/16/12 4:00,"Baclini, Miss. Helene Barbara",female,0.75
+5/17/12 3:00,"Keefe, Mr. Arthur",male,
+6/15/12 3:00,"Cacic, Mr. Luka",male,38
+6/18/12 3:00,"West, Mrs. Edwy Arthur (Ada Mary Worth)",female,33
+7/10/12 3:00,"Jerwan, Mrs. Amin S (Marie Marthe Thuillard)",female,23
+7/17/12 3:00,"Strandberg, Miss. Ida Sofia",female,22
+8/1/12 4:00,"Clifford, Mr. George Quincy",male,
+8/14/12 3:00,"Renouf, Mr. Peter Henry",male,34
+8/16/12 4:00,"Braund, Mr. Lewis Richard",male,29
+9/3/12 5:00,"Karlsson, Mr. Nils August",male,22
+9/5/12 4:00,"Hirvonen, Miss. Hildur E",female,2
+9/15/12 4:00,"Goodwin, Master. Harold Victor",male,9
+9/19/12 2:00,"Frost, Mr. Anthony Wood ""Archie""",male,
+10/9/12 3:00,"Rouse, Mr. Richard Henry",male,50
+10/11/12 3:00,"Turkula, Mrs. (Hedwig)",female,63
+11/2/12 3:00,"Bishop, Mr. Dickinson H",male,25
+11/5/12 3:00,"Lefebre, Miss. Jeannie",female,
+11/12/12 3:00,"Hoyt, Mrs. Frederick Maxfield (Jane Anne Forby)",female,35
+11/12/12 4:00,"Kent, Mr. Edward Austin",male,58
+11/13/12 3:00,"Somerton, Mr. Francis William",male,30
+12/4/12 3:00,"Coutts, Master. Eden Leslie ""Neville""",male,9
+12/10/12 2:00,"Hagland, Mr. Konrad Mathias Reiersen",male,
+12/11/12 3:00,"Windelov, Mr. Einar",male,21
+12/15/12 5:00,"Molson, Mr. Harry Markland",male,55
+12/17/12 3:00,"Artagaveytia, Mr. Ramon",male,71
+12/17/12 4:00,"Stanley, Mr. Edward Roland",male,21
+1/2/11 3:00,"Yousseff, Mr. Gerious",male,
+1/4/11 5:00,"Eustis, Miss. Elizabeth Mussey",female,54
+1/6/11 1:00,"Shellard, Mr. Frederick William",male,
+1/6/11 5:00,"Allison, Mrs. Hudson J C (Bessie Waldo Daniels)",female,25
+1/9/11 3:00,"Svensson, Mr. Olof",male,24
+1/13/11 4:00,"Calic, Mr. Petar",male,17
+2/5/11 6:00,"Canavan, Miss. Mary",female,21
+2/5/11 7:00,"O'Sullivan, Miss. Bridget Mary",female,
+2/7/11 1:00,"Laitinen, Miss. Kristina Sofia",female,37
+2/8/11 1:00,"Maioni, Miss. Roberta",female,16
+2/11/11 5:00,"Penasco y Castellana, Mr. Victor de Satode",male,18
+2/12/11 4:00,"Quick, Mrs. Frederick Charles (Jane Richards)",female,33
+2/15/11 5:00,"Bradley, Mr. George (""George Arthur Brayton"")",male,
+2/17/11 2:00,"Olsen, Mr. Henry Margido",male,28
+3/1/11 2:00,"Lang, Mr. Fang",male,26
+3/2/11 1:00,"Daly, Mr. Eugene Patrick",male,29
+3/4/11 1:00,"Webber, Mr. James",male,
+3/6/11 15:00,"McGough, Mr. James Robert",male,36
+3/7/11 0:00,"Rothschild, Mrs. Martin (Elizabeth L. Barrett)",female,54
+3/8/11 1:00,"Coleff, Mr. Satio",male,24
+3/9/11 1:00,"Walker, Mr. William Anderson",male,47
+3/18/11 3:00,"Lemore, Mrs. (Amelia Milley)",female,34
+4/1/11 1:00,"Ryan, Mr. Patrick",male,
+4/1/11 3:00,"Angle, Mrs. William A (Florence ""Mary"" Agnes Hughes)",female,36
+4/2/11 5:00,"Pavlovic, Mr. Stefo",male,32
+4/3/11 5:00,"Perreault, Miss. Anne",female,30
+4/4/11 1:00,"Vovk, Mr. Janko",male,22
+4/6/11 3:00,"Lahoud, Mr. Sarkis",male,
+4/10/11 5:00,"Hippach, Mrs. Louis Albert (Ida Sophia Fischer)",female,44
+4/10/11 6:00,"Kassem, Mr. Fared",male,
+4/13/11 5:00,"Farrell, Mr. James",male,40.5
+4/16/11 4:00,"Ridsdale, Miss. Lucy",female,50
+4/18/11 4:00,"Farthing, Mr. John",male,
+4/19/11 4:00,"Salonen, Mr. Johan Werner",male,39
+5/4/11 2:00,"Hocking, Mr. Richard George",male,23
+5/5/11 2:00,"Quick, Miss. Phyllis May",female,2
+5/5/11 3:00,"Toufik, Mr. Nakli",male,
+5/7/11 4:00,"Elias, Mr. Joseph Jr",male,17
+5/8/11 6:00,"Peter, Mrs. Catherine (Catherine Rizk)",female,
+5/9/11 4:00,"Cacic, Miss. Marija",female,30
+5/10/11 2:00,"Hart, Miss. Eva Miriam",female,7
+5/11/11 2:00,"Butt, Major. Archibald Willingham",male,45
+5/14/11 4:00,"LeRoy, Miss. Bertha",female,30
+5/17/11 2:00,"Risien, Mr. Samuel Beard",male,
+5/19/11 1:00,"Frolicher, Miss. Hedwig Margaritha",female,22
+6/1/11 4:00,"Crosby, Miss. Harriet R",female,36
+6/2/11 3:00,"Andersson, Miss. Ingeborg Constanzia",female,9
+6/6/11 2:00,"Andersson, Miss. Sigrid Elisabeth",female,11
+6/6/11 4:00,"Beane, Mr. Edward",male,32
+6/9/11 4:00,"Douglas, Mr. Walter Donald",male,50
+6/10/11 4:00,"Nicholson, Mr. Arthur Ernest",male,64
+6/15/11 4:00,"Beane, Mrs. Edward (Ethel Clarke)",female,19
+6/16/11 2:00,"Padro y Manent, Mr. Julian",male,
+6/16/11 3:00,"Goldsmith, Mr. Frank John",male,33
+6/18/11 4:00,"Davies, Master. John Morgan Jr",male,8
+7/4/11 4:00,"Thayer, Mr. John Borland Jr",male,17
+7/5/11 4:00,"Sharp, Mr. Percival James R",male,27
+7/6/11 2:00,"O'Brien, Mr. Timothy",male,
+7/7/11 4:00,"Leeni, Mr. Fahim (""Philip Zenni"")",male,22
+7/8/11 3:00,"Ohman, Miss. Velin",female,22
+7/8/11 4:00,"Wright, Mr. George",male,62
+7/9/11 4:00,"Duff Gordon, Lady. (Lucille Christiana Sutherland) (""Mrs Morgan"")",female,48
+7/11/11 2:00,"Robbins, Mr. Victor",male,
+7/11/11 4:00,"Taussig, Mrs. Emil (Tillie Mandelbaum)",female,39
+7/13/11 3:00,"de Messemaeker, Mrs. Guillaume Joseph (Emma)",female,36
+7/18/11 3:00,"Morrow, Mr. Thomas Rowan",male,
+7/19/11 2:00,"Sivic, Mr. Husein",male,40
+7/19/11 4:00,"Norman, Mr. Robert Douglas",male,28
+8/1/11 3:00,"Simmons, Mr. John",male,
+8/3/11 3:00,"Meanwell, Miss. (Marion Ogden)",female,
+8/6/11 5:00,"Davies, Mr. Alfred J",male,24
+8/7/11 5:00,"Stoytcheff, Mr. Ilia",male,19
+8/10/11 4:00,"Palsson, Mrs. Nils (Alma Cornelia Berglund)",female,29
+8/11/11 4:00,"Doharr, Mr. Tannous",male,
+8/14/11 6:00,"Jonsson, Mr. Carl",male,32
+8/15/11 4:00,"Harris, Mr. George",male,62
+8/17/11 3:00,"Appleton, Mrs. Edward Dale (Charlotte Lamson)",female,53
+8/18/11 2:00,"Flynn, Mr. John Irwin (""Irving"")",male,36
+9/2/11 3:00,"Kelly, Miss. Mary",female,
+9/3/11 4:00,"Rush, Mr. Alfred George John",male,16
+9/4/11 4:00,"Patchett, Mr. George",male,19
+9/5/11 5:00,"Garside, Miss. Ethel",female,34
+9/7/11 2:00,"Silvey, Mrs. William Baird (Alice Munger)",female,39
+9/7/11 4:00,"Caram, Mrs. Joseph (Maria Elias)",female,
+9/8/11 1:00,"Jussila, Mr. Eiriik",male,32
+9/10/11 4:00,"Christy, Miss. Julie Rachel",female,25
+9/12/11 4:00,"Thayer, Mrs. John Borland (Marian Longstreth Morris)",female,39
+9/14/11 2:00,"Downton, Mr. William James",male,54
+9/16/11 3:00,"Ross, Mr. John Hugo",male,36
+9/17/11 4:00,"Paulner, Mr. Uscher",male,
+9/19/11 3:00,"Taussig, Miss. Ruth",female,18
+10/1/11 5:00,"Jarvis, Mr. John Denzil",male,47
+10/3/11 2:00,"Frolicher-Stehli, Mr. Maxmillian",male,60
+10/4/11 4:00,"Gilinski, Mr. Eliezer",male,22
+10/5/11 4:00,"Murdlin, Mr. Joseph",male,
+10/6/11 3:00,"Rintamaki, Mr. Matti",male,35
+10/10/11 4:00,"Stephenson, Mrs. Walter Bertram (Martha Eustis)",female,52
+10/11/11 2:00,"Elsbury, Mr. William James",male,47
+10/13/11 2:00,"Bourke, Miss. Mary",female,
+10/13/11 3:00,"Chapman, Mr. John Henry",male,37
+10/18/11 2:00,"Van Impe, Mr. Jean Baptiste",male,36
+10/18/11 4:00,"Leitch, Miss. Jessie Wills",female,
+11/2/11 4:00,"Johnson, Mr. Alfred",male,49
+11/3/11 3:00,"Boulos, Mr. Hanna",male,
+11/6/11 3:00,"Duff Gordon, Sir. Cosmo Edmund (""Mr Morgan"")",male,49
+11/7/11 4:00,"Jacobsohn, Mrs. Sidney Samuel (Amy Frances Christy)",female,24
+11/8/11 4:00,"Slabenoff, Mr. Petco",male,
+11/9/11 3:00,"Harrington, Mr. Charles H",male,
+11/9/11 4:00,"Torber, Mr. Ernst William",male,44
+11/15/11 3:00,"Homer, Mr. Harry (""Mr E Haven"")",male,35
+11/19/11 4:00,"Lindell, Mr. Edvard Bengtsson",male,36
+12/7/11 2:00,"Karaic, Mr. Milan",male,30
+12/8/11 2:00,"Daniel, Mr. Robert Williams",male,27
+12/12/11 2:00,"Laroche, Mrs. Joseph (Juliette Marie Louise Lafargue)",female,22
+12/13/11 1:00,"Shutes, Miss. Elizabeth W",female,40
+12/13/11 4:00,"Andersson, Mrs. Anders Johan (Alfrida Konstantia Brogren)",female,39
+12/14/11 4:00,"Jardin, Mr. Jose Neto",male,
+12/16/11 4:00,"Murphy, Miss. Margaret Jane",female,
+12/18/11 5:00,"Horgan, Mr. John",male,
+12/19/11 4:00,"Brocklebank, Mr. William Alfred",male,35
+1/2/12 4:00,"Herman, Miss. Alice",female,24
+1/5/12 2:00,"Danbom, Mr. Ernst Gilbert",male,34
+1/5/12 3:00,"Lobb, Mrs. William Arthur (Cordelia K Stanlick)",female,26
+1/8/12 4:00,"Becker, Miss. Marion Louise",female,4
+1/9/12 1:00,"Gavey, Mr. Lawrence",male,26
+1/9/12 4:00,"Yasbeck, Mr. Antoni",male,27
+1/10/12 4:00,"Kimball, Mr. Edwin Nelson Jr",male,42
+1/11/12 3:00,"Nakid, Mr. Sahid",male,20
+1/13/12 3:00,"Hansen, Mr. Henry Damsgaard",male,21
+1/14/12 5:00,"Bowen, Mr. David John ""Dai""",male,21
+1/19/12 3:00,"Sutton, Mr. Frederick",male,61
+2/1/12 1:00,"Kirkland, Rev. Charles Leonard",male,57
+2/3/12 3:00,"Longley, Miss. Gretchen Fiske",female,21
+2/4/12 6:00,"Bostandyeff, Mr. Guentcho",male,26
+2/5/12 5:00,"O'Connell, Mr. Patrick D",male,
+2/5/12 6:00,"Barkworth, Mr. Algernon Henry Wilson",male,80
+2/7/12 2:00,"Lundahl, Mr. Johan Svensson",male,51
+2/9/12 3:00,"Stahelin-Maeglin, Dr. Max",male,32
+2/11/12 4:00,"Parr, Mr. William Henry Marsh",male,
+2/13/12 2:00,"Skoog, Miss. Mabel",female,9
+2/15/12 2:00,"Davis, Miss. Mary",female,28
+2/18/12 4:00,"Leinonen, Mr. Antti Gustaf",male,32
+3/2/12 2:00,"Collyer, Mr. Harvey",male,31
+3/6/12 2:00,"Panula, Mrs. Juha (Maria Emilia Ojala)",female,41
+3/7/12 1:00,"Thorneycroft, Mr. Percival",male,
+3/7/12 2:00,"Jensen, Mr. Hans Peder",male,20
+3/14/12 4:00,"Sagesser, Mlle. Emma",female,24
+3/16/12 2:00,"Skoog, Miss. Margit Elizabeth",female,2
+4/7/12 4:00,"Foo, Mr. Choong",male,
+4/9/12 2:00,"Baclini, Miss. Eugenie",female,0.75
+4/12/12 2:00,"Harper, Mr. Henry Sleeper",male,48
+4/13/12 4:00,"Cor, Mr. Liudevit",male,19
+4/19/12 2:00,"Simonius-Blumer, Col. Oberst Alfons",male,56
+4/19/12 4:00,"Willey, Mr. Edward",male,
+5/3/12 3:00,"Stanley, Miss. Amy Zillah Elsie",female,23
+5/4/12 4:00,"Mitkoff, Mr. Mito",male,
+5/8/12 3:00,"Doling, Miss. Elsie",female,18
+5/15/12 4:00,"Kalvik, Mr. Johannes Halvorsen",male,21
+6/1/12 3:00,"O'Leary, Miss. Hanora ""Norah""",female,
+6/5/12 4:00,"Hegarty, Miss. Hanora ""Nora""",female,18
+6/11/12 3:00,"Hickman, Mr. Leonard Mark",male,24
+6/12/12 4:00,"Radeff, Mr. Alexander",male,
+6/13/12 2:00,"Bourke, Mrs. John (Catherine)",female,32
+6/14/12 3:00,"Eitemiller, Mr. George Floyd",male,23
+7/1/12 4:00,"Newell, Mr. Arthur Webster",male,58
+7/6/12 4:00,"Frauenthal, Dr. Henry William",male,50
+7/9/12 2:00,"Badt, Mr. Mohamed",male,40
+7/10/12 4:00,"Colley, Mr. Edward Pomeroy",male,47
+7/16/12 3:00,"Coleff, Mr. Peju",male,36
+7/19/12 3:00,"Lindqvist, Mr. Eino William",male,20
+8/15/12 4:00,"Hickman, Mr. Lewis",male,32
+8/16/12 3:00,"Butler, Mr. Reginald Fenton",male,25
+9/4/12 2:00,"Rommetvedt, Mr. Knud Paust",male,
+9/5/12 3:00,"Cook, Mr. Jacob",male,43
+9/10/12 4:00,"Taylor, Mrs. Elmer Zebley (Juliet Cummins Wright)",female,
+9/18/12 2:00,"Brown, Mrs. Thomas William Solomon (Elizabeth Catherine Ford)",female,40
+9/19/12 3:00,"Davidson, Mr. Thornton",male,31
+10/2/12 3:00,"Mitchell, Mr. Henry Michael",male,70
+10/17/12 4:00,"Wilhelms, Mr. Charles",male,31
+11/5/12 2:00,"Watson, Mr. Ennis Hastings",male,
+11/6/12 3:00,"Edvardsson, Mr. Gustaf Hjalmar",male,18
+11/10/12 4:00,"Sawyer, Mr. Frederick Charles",male,24.5
+11/13/12 2:00,"Turja, Miss. Anna Sofia",female,18
+12/3/12 4:00,"Goodwin, Mrs. Frederick (Augusta Tyler)",female,43
+12/8/12 5:00,"Cardeza, Mr. Thomas Drake Martinez",male,36
+12/10/12 1:00,"Peters, Miss. Katie",female,
+12/10/12 3:00,"Hassab, Mr. Hammad",male,27
+12/12/12 2:00,"Olsvigen, Mr. Thor Anderson",male,20
+12/12/12 4:00,"Goodwin, Mr. Charles Edward",male,14
+12/17/12 2:00,"Brown, Mr. Thomas William Solomon",male,60
+1/3/11 0:00,"Laroche, Mr. Joseph Philippe Lemercier",male,25
+1/4/11 0:00,"Panula, Mr. Jaako Arnold",male,14
+1/7/11 1:00,"Dakic, Mr. Branko",male,19
+1/7/11 5:00,"Fischer, Mr. Eberhard Thelander",male,18
+1/8/11 5:00,"Madill, Miss. Georgette Alexandra",female,15
+1/9/11 7:00,"Dick, Mr. Albert Adrian",male,31
+1/12/11 5:00,"Karun, Miss. Manca",female,4
+1/14/11 1:00,"Lam, Mr. Ali",male,
+1/15/11 4:00,"Saad, Mr. Khalil",male,25
+1/17/11 6:00,"Weir, Col. John",male,60
+2/3/11 1:00,"Chapman, Mr. Charles Henry",male,52
+2/15/11 1:00,"Kelly, Mr. James",male,44
+2/16/11 5:00,"Mullens, Miss. Katherine ""Katie""",female,
+2/18/11 2:00,"Thayer, Mr. John Borland",male,49
+3/2/11 0:00,"Humblen, Mr. Adolf Mathias Nicolai Olsen",male,42
+3/2/11 5:00,"Astor, Mrs. John Jacob (Madeleine Talmadge Force)",female,18
+3/6/11 7:00,"Silverthorne, Mr. Spencer Victor",male,35
+3/10/11 11:00,"Barbara, Miss. Saiide",female,18
+3/17/11 2:00,"Gallagher, Mr. Martin",male,25
+4/2/11 4:00,"Hansen, Mr. Henrik Juul",male,26
+4/4/11 0:00,"Morley, Mr. Henry Samuel (""Mr Henry Marshall"")",male,39
+4/5/11 1:00,"Kelly, Mrs. Florence ""Fannie""",female,45
+4/5/11 2:00,"Calderhead, Mr. Edward Pennington",male,42
+4/5/11 5:00,"Cleaver, Miss. Alice",female,22
+4/6/11 2:00,"Moubarek, Master. Halim Gonios (""William George"")",male,
+4/9/11 5:00,"Mayne, Mlle. Berthe Antonine (""Mrs de Villiers"")",female,24
+4/17/11 4:00,"Klaber, Mr. Herman",male,
+4/17/11 6:00,"Taylor, Mr. Elmer Zebley",male,48
+4/19/11 2:00,"Larsson, Mr. August Viktor",male,29
+5/3/11 2:00,"Greenberg, Mr. Samuel",male,52
+5/8/11 5:00,"Soholt, Mr. Peter Andreas Lauritz Andersen",male,19
+5/12/11 3:00,"Endres, Miss. Caroline Louise",female,38
+5/12/11 4:00,"Troutt, Miss. Edwina Celia ""Winnie""",female,27
+5/16/11 4:00,"McEvoy, Mr. Michael",male,
+5/18/11 2:00,"Johnson, Mr. Malkolm Joackim",male,33
+6/3/11 3:00,"Harper, Miss. Annie Jessie ""Nina""",female,6
+6/3/11 4:00,"Jensen, Mr. Svend Lauritz",male,17
+6/4/11 5:00,"Gillespie, Mr. William Henry",male,34
+6/5/11 5:00,"Hodges, Mr. Henry Price",male,50
+6/6/11 1:00,"Chambers, Mr. Norman Campbell",male,27
+6/12/11 5:00,"Oreskovic, Mr. Luka",male,20
+6/17/11 3:00,"Renouf, Mrs. Peter Henry (Lillian Jefferys)",female,30
+6/17/11 4:00,"Mannion, Miss. Margareth",female,
+7/1/11 4:00,"Bryhl, Mr. Kurt Arnold Gottfrid",male,25
+7/5/11 2:00,"Ilmakangas, Miss. Pieta Sofia",female,25
+7/10/11 4:00,"Allen, Miss. Elisabeth Walton",female,29
+7/11/11 1:00,"Hassan, Mr. Houssein G N",male,11
+7/13/11 4:00,"Knight, Mr. Robert J",male,
+7/14/11 3:00,"Berriman, Mr. William John",male,23
+8/2/11 3:00,"Troupiansky, Mr. Moses Aaron",male,23
+8/4/11 2:00,"Williams, Mr. Leslie",male,28.5
+8/6/11 4:00,"Ford, Mrs. Edward (Margaret Ann Watson)",female,48
+8/7/11 4:00,"Lesurer, Mr. Gustave J",male,35
+8/12/11 4:00,"Ivanoff, Mr. Kanio",male,
+8/13/11 4:00,"Nankoff, Mr. Minko",male,
+8/16/11 3:00,"Hawksford, Mr. Walter James",male,
+8/16/11 4:00,"Cavendish, Mr. Tyrell William",male,36
+8/17/11 4:00,"Ryerson, Miss. Susan Parker ""Suzette""",female,21
+9/4/11 5:00,"McNamee, Mr. Neal",male,24
+9/5/11 4:00,"Stranden, Mr. Juho",male,31
+9/5/11 6:00,"Crosby, Capt. Edward Gifford",male,70
+9/15/11 2:00,"Abbott, Mr. Rossmore Edward",male,16
+9/15/11 3:00,"Sinkkonen, Miss. Anna",female,30
+9/15/11 4:00,"Marvin, Mr. Daniel Warner",male,19
+9/18/11 5:00,"Connaghton, Mr. Michael",male,31
+10/2/11 3:00,"Wells, Miss. Joan",female,4
+10/3/11 1:00,"Moor, Master. Meier",male,6
+10/5/11 3:00,"Vande Velde, Mr. Johannes Joseph",male,33
+10/6/11 4:00,"Jonkoff, Mr. Lalio",male,23
+10/7/11 2:00,"Herman, Mrs. Samuel (Jane Laver)",female,48
+10/7/11 4:00,"Hamalainen, Master. Viljo",male,0.67
+10/11/11 4:00,"Carlsson, Mr. August Sigfrid",male,28
+10/13/11 4:00,"Bailey, Mr. Percy Andrew",male,18
+11/1/11 3:00,"Theobald, Mr. Thomas Leonard",male,34
+11/3/11 2:00,"Rothes, the Countess. of (Lucy Noel Martha Dyer-Edwards)",female,33
+11/5/11 4:00,"Garfirth, Mr. John",male,
+11/6/11 5:00,"Nirva, Mr. Iisakki Antino Aijo",male,41
+11/9/11 2:00,"Barah, Mr. Hanna Assi",male,20
+11/10/11 2:00,"Carter, Mrs. William Ernest (Lucile Polk)",female,36
+11/13/11 4:00,"Eklund, Mr. Hans Linus",male,16
+11/14/11 4:00,"Hogeboom, Mrs. John C (Anna Andrews)",female,51
+11/15/11 1:00,"Brewe, Dr. Arthur Jackson",male,
+11/16/11 1:00,"Mangan, Miss. Mary",female,30.5
+11/17/11 1:00,"Moran, Mr. Daniel J",male,
+11/17/11 2:00,"Gronnestad, Mr. Daniel Danielsen",male,32
+11/18/11 4:00,"Lievens, Mr. Rene Aime",male,24
+12/3/11 3:00,"Jensen, Mr. Niels Peder",male,48
+12/9/11 3:00,"Mack, Mrs. (Mary)",female,57
+12/11/11 4:00,"Elias, Mr. Dibo",male,
+12/15/11 2:00,"Hocking, Mrs. Elizabeth (Eliza Needs)",female,54
+1/1/12 5:00,"Myhrman, Mr. Pehr Fabian Oliver Malkolm",male,18
+1/3/12 1:00,"Tobin, Mr. Roger",male,
+1/3/12 4:00,"Emanuel, Miss. Virginia Ethel",female,5
+1/5/12 1:00,"Kilgannon, Mr. Thomas J",male,
+1/5/12 4:00,"Robert, Mrs. Edward Scott (Elisabeth Walton McMillan)",female,43
+1/11/12 2:00,"Ayoub, Miss. Banoura",female,13
+1/14/12 6:00,"Dick, Mrs. Albert Adrian (Vera Gillespie)",female,17
+1/15/12 4:00,"Long, Mr. Milton Clyde",male,29
+1/15/12 5:00,"Johnston, Mr. Andrew G",male,
+1/16/12 5:00,"Ali, Mr. William",male,25
+1/19/12 1:00,"Harmer, Mr. Abraham (David Lishin)",male,25
+2/4/12 4:00,"Sjoblom, Miss. Anna Sofia",female,18
+2/10/12 3:00,"Rice, Master. George Hugh",male,8
+2/15/12 1:00,"Dean, Master. Bertram Vere",male,1
+2/16/12 1:00,"Guggenheim, Mr. Benjamin",male,46
+2/19/12 6:00,"Keane, Mr. Andrew ""Andy""",male,
+3/1/12 4:00,"Gaskell, Mr. Alfred",male,16
+3/4/12 5:00,"Sage, Miss. Stella Anna",female,
+3/4/12 6:00,"Hoyt, Mr. William Fisher",male,
+3/8/12 2:00,"Dantcheff, Mr. Ristiu",male,25
+3/11/12 5:00,"Otter, Mr. Richard",male,39
+3/12/12 2:00,"Leader, Dr. Alice (Farnham)",female,49
+3/15/12 2:00,"Osman, Mrs. Mara",female,31
+4/2/12 1:00,"Ibrahim Shawah, Mr. Yousseff",male,30
+4/3/12 2:00,"Van Impe, Mrs. Jean Baptiste (Rosalie Paula Govaert)",female,30
+4/4/12 2:00,"Ponesell, Mr. Martin",male,34
+4/5/12 3:00,"Collyer, Mrs. Harvey (Charlotte Annie Tate)",female,31
+4/6/12 2:00,"Carter, Master. William Thornton II",male,11
+4/6/12 3:00,"Thomas, Master. Assad Alexander",male,0.42
+4/13/12 2:00,"Hedman, Mr. Oskar Arvid",male,27
+4/14/12 5:00,"Johansson, Mr. Karl Johan",male,31
+4/16/12 3:00,"Andrews, Mr. Thomas Jr",male,39
+4/17/12 1:00,"Pettersson, Miss. Ellen Natalia",female,18
+5/7/12 2:00,"Meyer, Mr. August",male,39
+5/8/12 4:00,"Chambers, Mrs. Norman Campbell (Bertha Griggs)",female,33
+5/9/12 4:00,"Alexander, Mr. William",male,26
+5/15/12 3:00,"Lester, Mr. James",male,39
+5/16/12 3:00,"Slemen, Mr. Richard James",male,35
+6/1/12 4:00,"Andersson, Miss. Ebba Iris Alfrida",female,6
+6/4/12 3:00,"Tomlin, Mr. Ernest Portage",male,30.5
+6/5/12 3:00,"Fry, Mr. Richard",male,
+6/7/12 3:00,"Heininen, Miss. Wendla Maria",female,23
+6/16/12 4:00,"Mallet, Mr. Albert",male,31
+6/18/12 1:00,"Holm, Mr. John Fredrik Alexander",male,43
+7/2/12 3:00,"Skoog, Master. Karl Thorsten",male,10
+7/5/12 3:00,"Hays, Mrs. Charles Melville (Clara Jennings Gregg)",female,52
+7/8/12 5:00,"Lulic, Mr. Nikola",male,27
+7/9/12 3:00,"Reuchlin, Jonkheer. John George",male,38
+7/11/12 2:00,"Moor, Mrs. (Beila)",female,27
+7/11/12 3:00,"Panula, Master. Urho Abraham",male,2
+7/12/12 4:00,"Flynn, Mr. John",male,
+7/14/12 5:00,"Lam, Mr. Len",male,
+7/18/12 2:00,"Mallet, Master. Andre",male,1
+8/3/12 3:00,"McCormack, Mr. Thomas Joseph",male,
+8/6/12 2:00,"Stone, Mrs. George Nelson (Martha Evelyn)",female,62
+8/6/12 3:00,"Yasbeck, Mrs. Antoni (Selini Alexander)",female,15
+8/8/12 2:00,"Richards, Master. George Sibley",male,0.83
+8/9/12 3:00,"Saad, Mr. Amin",male,
+8/13/12 3:00,"Augustsson, Mr. Albert",male,23
+8/14/12 4:00,"Allum, Mr. Owen George",male,18
+9/3/12 4:00,"Compton, Miss. Sara Rebecca",female,39
+9/11/12 2:00,"Pasic, Mr. Jakob",male,21
+9/12/12 4:00,"Sirota, Mr. Maurice",male,
+9/18/12 1:00,"Chip, Mr. Chang",male,32
+9/18/12 4:00,"Marechal, Mr. Pierre",male,
+10/9/12 2:00,"Alhomaki, Mr. Ilmari Rudolf",male,20
+10/15/12 2:00,"Mudd, Mr. Thomas Charles",male,16
+10/18/12 3:00,"Serepeca, Miss. Augusta",female,30
+10/18/12 4:00,"Lemberopolous, Mr. Peter L",male,34.5
+10/19/12 3:00,"Culumovic, Mr. Jeso",male,17
+10/19/12 4:00,"Abbing, Mr. Anthony",male,42
+11/4/12 5:00,"Sage, Mr. Douglas Bullen",male,
+11/8/12 2:00,"Markoff, Mr. Marin",male,35
+11/13/12 1:00,"Harper, Rev. John",male,28
+11/14/12 3:00,"Goldenberg, Mrs. Samuel L (Edwiga Grabowska)",female,
+11/15/12 4:00,"Andersson, Master. Sigvard Harald Elias",male,4
+11/16/12 4:00,"Svensson, Mr. Johan",male,74
+11/19/12 2:00,"Boulos, Miss. Nourelain",female,9
+12/1/12 4:00,"Lines, Miss. Mary Conover",female,16
+12/4/12 2:00,"Carter, Mrs. Ernest Courtenay (Lilian Hughes)",female,44
+12/7/12 3:00,"Aks, Mrs. Sam (Leah Rosen)",female,18
+12/13/12 2:00,"Wick, Mrs. George Dennick (Mary Hitchcock)",female,45
+12/15/12 4:00,"Daly, Mr. Peter Denis ",male,51
+12/18/12 2:00,"Baclini, Mrs. Solomon (Latifa Qurban)",female,24
+12/18/12 3:00,"Razi, Mr. Raihed",male,
+12/18/12 4:00,"Hansen, Mr. Claus Peter",male,41
+12/19/12 3:00,"Giles, Mr. Frederick Edward",male,21
+1/1/11 9:00,"Swift, Mrs. Frederick Joel (Margaret Welles Barron)",female,48
+1/5/11 0:00,"Sage, Miss. Dorothy Edith ""Dolly""",female,
+1/5/11 1:00,"Gill, Mr. John William",male,24
+1/9/11 23:00,"Bystrom, Mrs. (Karolina)",female,42
+1/11/11 5:00,"Duran y More, Miss. Asuncion",female,27
+1/12/11 1:00,"Roebling, Mr. Washington Augustus II",male,31
+1/13/11 0:00,"van Melkebeke, Mr. Philemon",male,
+1/16/11 3:00,"Johnson, Master. Harold Theodor",male,4
+1/19/11 1:00,"Balkic, Mr. Cerin",male,26
+2/1/11 0:00,"Beckwith, Mrs. Richard Leonard (Sallie Monypeny)",female,47
+2/8/11 0:00,"Carlsson, Mr. Frans Olof",male,33
+2/10/11 5:00,"Vander Cruyssen, Mr. Victor",male,47
+2/11/11 1:00,"Abelson, Mrs. Samuel (Hannah Wizosky)",female,28
+2/14/11 1:00,"Najib, Miss. Adele Kiamie ""Jane""",female,15
+2/17/11 1:00,"Gustafsson, Mr. Alfred Ossian",male,20
+2/18/11 3:00,"Petroff, Mr. Nedelio",male,19
+2/18/11 5:00,"Laleff, Mr. Kristo",male,
+3/6/11 21:00,"Potter, Mrs. Thomas Jr (Lily Alexenia Wilson)",female,56
+3/11/11 0:00,"Shelley, Mrs. William (Imanita Parrish Hall)",female,25
+3/11/11 5:00,"Markun, Mr. Johann",male,33
+3/12/11 3:00,"Dahlberg, Miss. Gerda Ulrika",female,22
+3/15/11 1:00,"Banfield, Mr. Frederick James",male,28
+4/1/11 0:00,"Sutehall, Mr. Henry Jr",male,25
+4/7/11 5:00,"Rice, Mrs. William (Margaret Norton)",female,39
+4/8/11 1:00,"Montvila, Rev. Juozas",male,27
+5/4/11 1:00,"Graham, Miss. Margaret Edith",female,19
+5/5/11 1:00,"Johnston, Miss. Catherine Helen ""Carrie""",female,
+5/6/11 3:00,"Behr, Mr. Karl Howell",male,26
+5/17/11 1:00,"Dooley, Mr. Patrick",male,32
